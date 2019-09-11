@@ -1,11 +1,57 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="layout_alignParentStartEnd">
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+    </style>
+
+    <style name="settingsActivityStyle" parent="@style/Theme.MaterialComponents.Light">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="settingsTopicsStyle">
+        <item name="android:background">@color/backgroundGrey</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">@dimen/settingsTopic</item>
+    </style>
+
+    <style name="settingsRadioButtonStyle">
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:textSize">@dimen/settingsRadioText</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="contactItemNameStyle">
+        <item name="android:textSize">@dimen/contactName</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="contactItemPhoneStyle">
+        <item name="android:textSize">@dimen/contactNumber</item>
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="contactDetailStyle">
+        <item name="android:backgroundTint">@android:color/transparent</item>
+        <item name="android:layout_marginEnd">16dp</item>
+    </style>
+
+
 
 </resources>

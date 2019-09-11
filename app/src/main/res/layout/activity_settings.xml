@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/settingsTopicsStyle"
+            android:text="@string/panel_layout" />
+
+        <RadioGroup
+            android:id="@+id/tab_panel_location_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/toolPanelOnTop"
+                android:tag="@string/tag_location_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/on_top"
+                style="@style/settingsRadioButtonStyle"/>
+
+            <RadioButton
+                android:id="@+id/toolPanelOnBottom"
+                android:tag="@string/tag_location_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/to_bottom"
+                style="@style/settingsRadioButtonStyle"/>
+        </RadioGroup>
+    </LinearLayout>
+</layout>
