@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="contacts">Контакты</string>
+    <string name="find_in_address_book">Поиск</string>
+    <string name="keypad">Набор</string>
+    <string name="number">Номер</string>
+    <string name="on_top">Сверху</string>
+    <string name="panel_layout">Расположение панели:</string>
+    <string name="settings">Настройки</string>
+    <string name="to_bottom">Снизу</string>
+    <string name="recent">Звонки</string>
+    <string name="contact">Контакт</string>
+    <string name="save">Сохранить</string>
+    <string name="contact_name">Имя</string>
+    <string name="contact_phone">Телефон</string>
+    <string name="empty_name">Пожалуйста введите имя</string>
+    <string name="empty_phone">Укажите телефон</string>
+</resources>

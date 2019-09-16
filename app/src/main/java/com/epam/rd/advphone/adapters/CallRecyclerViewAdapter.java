@@ -2,21 +2,17 @@ package com.epam.rd.advphone.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.databinding.CallLogItemBinding;
 import com.epam.rd.advphone.models.Call;
-import com.epam.rd.advphone.util.ContactCommunicator;
 import com.epam.rd.advphone.viewmodels.CallsViewModel;
 
 import java.util.ArrayList;

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,6 @@ import androidx.core.content.PermissionChecker;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.epam.rd.advphone.AdvPhoneViewModelFactory;
@@ -180,6 +180,23 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
             Intent intent = new Intent(Intent.ACTION_SENDTO);
             intent.setData(Uri.parse("sms:" + PhoneNumberUtils.normalizeNumber(contactNumber)));
             startActivity(intent);
+        }
+    }
+
+    public void showContactActivity(View view) {
+        Intent intent = new Intent(this, ContactActivity.class);
+        startActivityForResult(intent, RequestCodes.REQUEST_NEW_CONTACT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RequestCodes.REQUEST_NEW_CONTACT) {
+            if (resultCode == RESULT_OK && data.hasExtra(Constants.CONTACT)) {
+                Executors.newSingleThreadExecutor().submit(() -> ContactDaoInjection.provideContactsDao(MainActivity.this)
+                        .insertContact(data.getParcelableExtra(Constants.CONTACT)));
+
+            }
         }
     }
 }

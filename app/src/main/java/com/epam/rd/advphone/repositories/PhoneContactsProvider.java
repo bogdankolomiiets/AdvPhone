@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import com.epam.rd.advphone.models.Contact;
 
@@ -37,7 +36,8 @@ public class PhoneContactsProvider implements ContactsProvider {
                 ContactsContract.CommonDataKinds.Phone.TYPE,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                 ContactsContract.CommonDataKinds.Phone.NUMBER,
-                ContactsContract.CommonDataKinds.Phone.PHOTO_URI
+                ContactsContract.CommonDataKinds.Phone.PHOTO_URI,
+                ContactsContract.CommonDataKinds.Email.ADDRESS
         };
 
         try (Cursor cursor = contentResolver.query(uri, projection, ContactsContract.CommonDataKinds.Phone.TYPE + " = ?",
@@ -48,6 +48,7 @@ public class PhoneContactsProvider implements ContactsProvider {
                 int contactNameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                 int contactPhoneColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 int contactImageColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
+                int contactEmailColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
 
                 while (cursor.moveToNext()) {
                     tempList.add(new Contact(
@@ -55,7 +56,8 @@ public class PhoneContactsProvider implements ContactsProvider {
                             cursor.getString(contactImageColumnIndex),
                             cursor.getString(contactNameColumnIndex),
                             cursor.getString(contactPhoneColumnIndex),
-                            cursor.getString(contactTypeColumnIndex)));
+                            cursor.getString(contactTypeColumnIndex),
+                            cursor.getString(contactEmailColumnIndex)));
                 }
             }
         }

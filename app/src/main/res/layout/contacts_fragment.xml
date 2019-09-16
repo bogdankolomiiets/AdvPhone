@@ -15,6 +15,7 @@
         android:layout_marginBottom="30dp"
         android:clickable="true"
         android:focusable="true"
+        android:onClick="showContactActivity"
         app:srcCompat="@drawable/account_plus" />
 
     <androidx.recyclerview.widget.RecyclerView
