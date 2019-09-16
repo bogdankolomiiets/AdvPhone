@@ -12,7 +12,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
 
-import com.epam.rd.advphone.OnContactItemClickListener;
+import com.epam.rd.advphone.util.OnContactConnectClickListener;
+import com.epam.rd.advphone.util.OnContactEditClickListener;
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.databinding.ContactItemBinding;
 import com.epam.rd.advphone.models.Contact;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder>
-                                        implements OnContactItemClickListener {
+                                        implements OnContactConnectClickListener, OnContactEditClickListener {
     private ContactCommunicator contactCommunicator;
     private Context context;
     private RecyclerView recyclerView;
@@ -44,7 +45,8 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ContactItemBinding contactItemBinding =
                 DataBindingUtil.inflate(inflater, R.layout.contact_item, parent, false);
-        contactItemBinding.setContactItemClickListener(this);
+        contactItemBinding.setOnContactConnectClickListener(this);
+        contactItemBinding.setOnContactEditClickListener(this);
 
         //init context
         this.context = parent.getContext();

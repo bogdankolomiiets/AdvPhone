@@ -14,9 +14,11 @@
             type="com.epam.rd.advphone.models.Contact" />
 
         <variable
-            name="contactItemClickListener"
-            type="com.epam.rd.advphone.OnContactItemClickListener" />
-
+            name="onContactConnectClickListener"
+            type="com.epam.rd.advphone.util.OnContactConnectClickListener" />
+        <variable
+            name="onContactInsertClickListener"
+            type="com.epam.rd.advphone.util.OnContactInsertClickListener" />
         <variable
             name="itemPosition"
             type="int" />
@@ -82,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/call_image"
-                    android:onClick="@{() -> contactItemClickListener.onCallClick(contact.phone)}"
+                    android:onClick="@{() -> onContactConnectClickListener.onCallClick(contact.phone)}"
                     android:src="@drawable/phone" />
 
                 <ImageButton
@@ -91,27 +93,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/sms_image"
-                    android:onClick="@{() -> contactItemClickListener.onSmsClick(contact.phone)}"
+                    android:onClick="@{() -> onContactConnectClickListener.onSmsClick(contact.phone)}"
                     android:src="@drawable/message_text" />
-
-                <ImageButton
-                    android:id="@+id/setFavouriteBtn"
-                    style="@style/contactDetailStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/heart_image"
-                    android:onClick="@{() -> contactItemClickListener.onFavouriteClick(itemPosition, contact)}"
-                    android:src="@{contact.favourite ? @drawable/heart : @drawable/heart_outline}"
-                    tools:src="@drawable/heart_outline" />
-
-                <ImageButton
-                    android:id="@+id/editContactBtn"
-                    style="@style/contactDetailStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/edit_image"
-                    android:onClick="@{() -> contactItemClickListener.onEditClick(contact)}"
-                    android:src="@drawable/account_edit_outline" />
 
             </LinearLayout>
 

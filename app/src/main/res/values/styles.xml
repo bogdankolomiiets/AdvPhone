@@ -1,20 +1,21 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="mainActivityStyle" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="layout_alignParentStartEnd">
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentEnd">true</item>
-    </style>
-
-    <style name="settingsActivityStyle" parent="@style/Theme.MaterialComponents.Light">
-        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="settingsTopicsStyle">
@@ -52,6 +53,10 @@
         <item name="android:layout_marginEnd">16dp</item>
     </style>
 
-
+    <style name="contactActivityStyle" parent="@style/TextAppearance.AppCompat.Large">
+        <item name="android:lines">1</item>
+        <item name="android:maxLength">20</item>
+        <item name="android:layout_marginBottom">16dp</item>
+    </style>
 
 </resources>

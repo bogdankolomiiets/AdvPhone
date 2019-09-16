@@ -8,4 +8,5 @@ public interface DatabaseStringsConstants {
     String CONTACT_IMAGE = "contactImage";
     String CONTACT_FAVOURITE = "isFavourite";
     String CONTACT_TYPE = "contactType";
+    String CONTACT_EMAIL = "contactEmail";
 }
