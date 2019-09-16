@@ -12,12 +12,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import com.epam.rd.advphone.Constants;
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.databinding.ActivityContactBinding;
 import com.epam.rd.advphone.models.Contact;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+
+import static com.epam.rd.advphone.Constants.CONTACT;
 
 public class ContactActivity extends AppCompatActivity {
     private ActivityContactBinding contactBinding;
@@ -26,6 +27,11 @@ public class ContactActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         contactBinding = DataBindingUtil.setContentView(this, R.layout.activity_contact);
+
+        Contact contact = getIntent().getParcelableExtra(CONTACT);
+        if (contact != null) {
+            contactBinding.setContact(contact);
+        }
     }
 
     @Override
@@ -57,10 +63,10 @@ public class ContactActivity extends AppCompatActivity {
     }
 
     private boolean validateData() {
-        if (contactBinding.contactNameTv.getText().length() == 0) {
+        if (contactBinding.contactName.getText().length() == 0) {
             showSnackBar(R.string.empty_name);
             return false;
-        } else if (contactBinding.contactPhoneTv.getText().length() == 0) {
+        } else if (contactBinding.contactPhone.getText().length() == 0) {
             showSnackBar(R.string.empty_phone);
             return false;
         }
@@ -72,13 +78,17 @@ public class ContactActivity extends AppCompatActivity {
     }
 
     private void saveContact() {
-        Contact contact = new Contact();
-        contact.setName(contactBinding.contactNameTv.getText().toString());
-        contact.setPhone(contactBinding.contactPhoneTv.getText().toString());
+        Contact contact = contactBinding.getContact();
+
+        if (contact == null) {
+            contact = new Contact();
+        }
+        contact.setName(contactBinding.contactName.getText().toString());
+        contact.setPhone(contactBinding.contactPhone.getText().toString());
         contact.setEmail(contactBinding.contactEmail.getText().toString());
 
         Intent intent = new Intent();
-        intent.putExtra(Constants.CONTACT, contact);
+        intent.putExtra(CONTACT, contact);
         setResult(RESULT_OK, intent);
         finish();
     }
