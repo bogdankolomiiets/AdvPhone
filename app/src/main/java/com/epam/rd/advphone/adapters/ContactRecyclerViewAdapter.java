@@ -1,6 +1,8 @@
 package com.epam.rd.advphone.adapters;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -8,26 +10,31 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
 
-import com.epam.rd.advphone.util.OnContactConnectClickListener;
-import com.epam.rd.advphone.util.OnContactEditClickListener;
+import com.epam.rd.advphone.Constants;
 import com.epam.rd.advphone.R;
+import com.epam.rd.advphone.RequestCodes;
 import com.epam.rd.advphone.databinding.ContactItemBinding;
 import com.epam.rd.advphone.models.Contact;
 import com.epam.rd.advphone.util.ContactBackground;
 import com.epam.rd.advphone.util.ContactCommunicator;
+import com.epam.rd.advphone.util.OnContactConnectClickListener;
+import com.epam.rd.advphone.util.OnContactEditClickListener;
 import com.epam.rd.advphone.viewmodels.ContactsViewModel;
+import com.epam.rd.advphone.views.ContactActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder>
                                         implements OnContactConnectClickListener, OnContactEditClickListener {
     private ContactCommunicator contactCommunicator;
-    private Context context;
     private RecyclerView recyclerView;
     private ContactsViewModel viewModel;
     private List<Contact> contacts;
@@ -42,18 +49,35 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     @NonNull
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //init contactCommunicator
+        this.contactCommunicator = (ContactCommunicator) parent.getContext();
+
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ContactItemBinding contactItemBinding =
                 DataBindingUtil.inflate(inflater, R.layout.contact_item, parent, false);
         contactItemBinding.setOnContactConnectClickListener(this);
         contactItemBinding.setOnContactEditClickListener(this);
 
-        //init context
-        this.context = parent.getContext();
-        this.contactCommunicator = (ContactCommunicator) parent.getContext();
+        contactItemBinding.getRoot().setOnLongClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setIcon(R.drawable.delete_alert);
+            builder.setTitle(R.string.remove_contact);
+            builder.setMessage(contactItemBinding.getContact().getName() + "\n\n" + contactItemBinding.getContact().getPhone());
+            builder.setPositiveButton(R.string.ok_btn, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    viewModel.deleteContact(contactItemBinding.getContact().getId());
+                }
+            });
+            builder.setNegativeButton(R.string.cancel_btn, (dialogInterface, i) -> dialogInterface.dismiss());
+            builder.create().show();
+            return true;
+        });
+
 
         return new ContactViewHolder(contactItemBinding.getRoot());
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
@@ -73,8 +97,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         if (contact.getContactImage() != null) {
             holder.contactItemBinding.contactImage.setImageURI(Uri.parse(contact.getContactImage()));
         } else {
-            holder.contactItemBinding.contactImage.setCircleBackgroundColor(ContactBackground.getColor(context, contact.getName().charAt(0)));
-            holder.contactItemBinding.contactImage.setImageResource(R.drawable.account);
+            CircleImageView circleView = holder.contactItemBinding.contactImage;
+            circleView.setCircleBackgroundColor(ContactBackground.getColor(recyclerView.getContext(), contact.getName().charAt(0)));
+            circleView.setImageResource(R.drawable.account);
         }
 
         holder.contactItemBinding.getRoot().setOnClickListener(view -> {
@@ -107,9 +132,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
     private void setFavouriteItemsBackground(@NonNull ContactViewHolder holder, int position) {
         if (countOfFavourite > 0) {
-            if (position < countOfFavourite) {
-                holder.contactItemBinding.mainContactInfoContainer.setBackgroundColor(context.getResources().getColor(R.color.favourite_contact));
-            } else holder.contactItemBinding.mainContactInfoContainer.setBackgroundColor(Color.TRANSPARENT);
+            holder.contactItemBinding.mainContactInfoContainer.setBackgroundColor((position < countOfFavourite) ?
+                    recyclerView.getContext().getResources().getColor(R.color.favourite_contact) : Color.TRANSPARENT);
+
         }
     }
 
@@ -123,7 +148,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     public int getItemCount() {
         if (contacts != null) {
             return contacts.size();
-        } else return 0;
+        } else {
+            return 0;
+        }
     }
 
     public void setContacts(List<Contact> contacts) {
@@ -149,6 +176,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
     @Override
     public void onEditClick(Contact contact) {
+        Intent intent = new Intent(recyclerView.getContext(), ContactActivity.class);
+        intent.putExtra(Constants.CONTACT, contact);
+        ((Activity)recyclerView.getContext()).startActivityForResult(intent, RequestCodes.REQUEST_EDIT_CONTACT);
     }
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {

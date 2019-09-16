@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +31,7 @@ import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.RequestCodes;
 import com.epam.rd.advphone.adapters.MainViewPager2Adapter;
 import com.epam.rd.advphone.databinding.ActivityMainBinding;
+import com.epam.rd.advphone.models.Contact;
 import com.epam.rd.advphone.repositories.CallsProvider;
 import com.epam.rd.advphone.repositories.ContactsProvider;
 import com.epam.rd.advphone.repositories.PhoneCallsProvider;
@@ -43,6 +43,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.concurrent.Executors;
+
+import static com.epam.rd.advphone.Constants.CONTACT;
+import static com.epam.rd.advphone.RequestCodes.REQUEST_EDIT_CONTACT;
+import static com.epam.rd.advphone.RequestCodes.REQUEST_NEW_CONTACT;
 
 
 public class MainActivity extends AppCompatActivity implements ContactCommunicator {
@@ -71,16 +75,6 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
 
     }
 
-    private void retrieveContacts() {
-        String permission = Manifest.permission.READ_CONTACTS;
-        if (PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, RequestCodes.PERMISSION_READ_CONTACTS);
-        } else {
-            ContactsProvider contactsProvider = PhoneContactsProvider.getInstance(this);
-            Executors.newSingleThreadExecutor().submit(() -> ContactDaoInjection.provideContactsDao(this)
-                    .insertContacts(contactsProvider.getContacts()));
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -92,14 +86,29 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
                     break;
                 }
                 case RequestCodes.PERMISSION_READ_CALL_LOG: {
-                    CallsProvider callsProvider = PhoneCallsProvider.getInstance(this);
-                    CallsViewModel callsViewModel = obtainViewModel(this, CallsViewModel.class);
-                    callsViewModel.setCallsProvider(callsProvider);
-                    callsViewModel.getCallsLogList().setValue(callsProvider.getCalls());
+                    readCallLog();
                     break;
                 }
             }
         }
+    }
+
+    private void retrieveContacts() {
+        String permission = Manifest.permission.READ_CONTACTS;
+        if (PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, RequestCodes.PERMISSION_READ_CONTACTS);
+        } else {
+            ContactsProvider contactsProvider = PhoneContactsProvider.getInstance(this);
+            Executors.newSingleThreadExecutor().submit(() -> ContactDaoInjection.provideContactsDao(this)
+                    .insertContacts(contactsProvider.getContacts()));
+        }
+    }
+
+    private void readCallLog() {
+        CallsProvider callsProvider = PhoneCallsProvider.getInstance(this);
+        CallsViewModel callsViewModel = obtainViewModel(this, CallsViewModel.class);
+        callsViewModel.setCallsProvider(callsProvider);
+        callsViewModel.getCallsLogList().setValue(callsProvider.getCalls());
     }
 
     private void getTabLocation() {
@@ -191,11 +200,18 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RequestCodes.REQUEST_NEW_CONTACT) {
-            if (resultCode == RESULT_OK && data.hasExtra(Constants.CONTACT)) {
-                Executors.newSingleThreadExecutor().submit(() -> ContactDaoInjection.provideContactsDao(MainActivity.this)
-                        .insertContact(data.getParcelableExtra(Constants.CONTACT)));
-
+        Contact contact;
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_NEW_CONTACT) {
+                contact = data.getParcelableExtra(CONTACT);
+                if (contact != null) {
+                    obtainViewModel(this, ContactsViewModel.class).insertContact(contact);
+                }
+            } else if (requestCode == REQUEST_EDIT_CONTACT) {
+                contact = data.getParcelableExtra(CONTACT);
+                if (contact != null) {
+                    obtainViewModel(this, ContactsViewModel.class).updateContact(contact);
+                }
             }
         }
     }

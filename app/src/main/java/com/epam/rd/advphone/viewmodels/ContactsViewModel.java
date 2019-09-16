@@ -40,7 +40,18 @@ public class ContactsViewModel extends ViewModel {
     public void updateContact(Contact contact) {
         Executors.newSingleThreadExecutor().submit(() -> {
             contactsDao.updateContact(contact);
-            loadData();
+        });
+    }
+
+    public void deleteContact(int contactId) {
+        Executors.newSingleThreadExecutor().submit(() -> {
+            contactsDao.deleteContact(contactId);
+        });
+    }
+
+    public void insertContact(Contact contact) {
+        Executors.newSingleThreadExecutor().submit(() -> {
+            contactsDao.insertContact(contact);
         });
     }
 

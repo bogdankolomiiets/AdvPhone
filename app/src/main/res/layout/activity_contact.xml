@@ -15,7 +15,7 @@
         android:padding="16dp">
 
         <EditText
-            android:id="@+id/contactNameTv"
+            android:id="@+id/contactName"
             style="@style/contactActivityStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             android:autofillHints="" />
 
         <EditText
-            android:id="@+id/contactPhoneTv"
+            android:id="@+id/contactPhone"
             style="@style/contactActivityStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/contact_email"
             android:inputType="textEmailAddress"
-            android:text="@{contact.email}"
+            android:text="@{contact.email.equals(contact.phone) ? null : contact.email}"
             android:maxLength="40"
             tools:targetApi="O"
             android:autofillHints="" />

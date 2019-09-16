@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="contact"
             type="com.epam.rd.advphone.models.Contact" />

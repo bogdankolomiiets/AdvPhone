@@ -25,6 +25,7 @@
     <string name="button_sharp" translatable="false">#</string>
     <string name="contact_image" translatable="false">contact image</string>
     <string name="ok_btn" translatable="false">OK</string>
+    <string name="cancel_btn">CANCEL</string>
     <string name="call_image" translatable="false">call image</string>
     <string name="sms_image" translatable="false">sms image</string>
     <string name="heart_image" translatable="false">heart image</string>
@@ -39,4 +40,5 @@
     <string name="contact_email" translatable="false">Email</string>
     <string name="empty_name">Enter name please</string>
     <string name="empty_phone">Enter phone number please</string>
+    <string name="remove_contact">Remove contact</string>
 </resources>
