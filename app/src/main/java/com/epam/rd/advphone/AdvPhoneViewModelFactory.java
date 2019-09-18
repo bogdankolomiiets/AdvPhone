@@ -42,13 +42,11 @@ public class AdvPhoneViewModelFactory extends ViewModelProvider.NewInstanceFacto
 
     @NonNull
     @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+    public  <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ContactsViewModel.class)) {
             return (T) new ContactsViewModel(contactsDao);
-        }
-        if (modelClass.isAssignableFrom(CallsViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(CallsViewModel.class)) {
             return (T) new CallsViewModel();
-        }
-        throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
+        } else throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
 }

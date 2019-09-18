@@ -1,7 +1,6 @@
 package com.epam.rd.advphone.adapters;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -50,7 +49,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //init contactCommunicator
-        this.contactCommunicator = (ContactCommunicator) parent.getContext();
+        this.contactCommunicator = (ContactCommunicator) recyclerView.getContext();
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ContactItemBinding contactItemBinding =
@@ -63,12 +62,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
             builder.setIcon(R.drawable.delete_alert);
             builder.setTitle(R.string.remove_contact);
             builder.setMessage(contactItemBinding.getContact().getName() + "\n\n" + contactItemBinding.getContact().getPhone());
-            builder.setPositiveButton(R.string.ok_btn, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    viewModel.deleteContact(contactItemBinding.getContact().getId());
-                }
-            });
+            builder.setPositiveButton(R.string.ok_btn, (dialogInterface, i) -> viewModel.deleteContact(contactItemBinding.getContact().getId()));
             builder.setNegativeButton(R.string.cancel_btn, (dialogInterface, i) -> dialogInterface.dismiss());
             builder.create().show();
             return true;
@@ -77,7 +71,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
         return new ContactViewHolder(contactItemBinding.getRoot());
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {

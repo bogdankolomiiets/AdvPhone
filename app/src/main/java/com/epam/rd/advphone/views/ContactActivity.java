@@ -59,7 +59,9 @@ public class ContactActivity extends AppCompatActivity {
 
     private void hideKeypad() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(contactBinding.getRoot().getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(contactBinding.getRoot().getWindowToken(), 0);
+        }
     }
 
     private boolean validateData() {
