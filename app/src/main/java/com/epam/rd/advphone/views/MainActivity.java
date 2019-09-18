@@ -17,18 +17,23 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.epam.rd.advphone.AdvPhoneViewModelFactory;
 import com.epam.rd.advphone.Constants;
 import com.epam.rd.advphone.ContactDaoInjection;
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.RequestCodes;
+import com.epam.rd.advphone.adapters.ContactRecyclerViewAdapter;
 import com.epam.rd.advphone.adapters.MainViewPager2Adapter;
 import com.epam.rd.advphone.databinding.ActivityMainBinding;
 import com.epam.rd.advphone.models.Contact;
@@ -39,6 +44,7 @@ import com.epam.rd.advphone.repositories.PhoneContactsProvider;
 import com.epam.rd.advphone.util.ContactCommunicator;
 import com.epam.rd.advphone.viewmodels.CallsViewModel;
 import com.epam.rd.advphone.viewmodels.ContactsViewModel;
+import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
     private int[] tabTitles;
     private String tabPanelLocation;
     private TabLayout tabLayout;
+    private RecyclerView searchContactRecycler;
+    private ContactsViewModel contactsViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,14 +73,59 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
         //and insertion to the database
         retrieveContacts();
 
-        obtainViewModel(this, ContactsViewModel.class);
-
         //getting info about tabs location from shared preferences
         getTabLocation();
 
         initTabTitles();
         initTabLayoutAndViewPager();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //init ContactsViewModel for contacts searching
+        contactsViewModel = obtainViewModel(this, ContactsViewModel.class);
+
+        //find contacts by name
+        findContactsFeature();
+
+        initSearchContactRecycler();
+    }
+
+    private void findContactsFeature() {
+        mainBinding.searchView.setOnQueryTextFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) searchContactRecycler.setVisibility(View.VISIBLE);
+        });
+
+        mainBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() > 0) {
+                    contactsViewModel.setContactsFilteringText("%" + newText + "%");
+                } else {
+                    contactsViewModel.setContactsFilteringText("");
+                }
+                return true;
+            }
+        });
+    }
+
+    private void initSearchContactRecycler() {
+        searchContactRecycler = mainBinding.searchContactRecycler;
+        searchContactRecycler.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        searchContactRecycler.setLayoutManager(layoutManager);
+        DividerItemDecoration decoration = new DividerItemDecoration(this, layoutManager.getOrientation());
+        searchContactRecycler.addItemDecoration(decoration);
+        ContactRecyclerViewAdapter adapter = new ContactRecyclerViewAdapter(contactsViewModel);
+        searchContactRecycler.setAdapter(adapter);
+        contactsViewModel.getFoundContacts().observe(this, adapter::setContacts);
     }
 
 
@@ -131,12 +184,15 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
         tabLayout = new TabLayout(this);
         tabLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setZ(-1);
         tabLayout.setTabTextColors(Color.DKGRAY, getResources().getColor(R.color.colorAccent));
 
         //setup tabLayout location
-        if (tabPanelLocation.equals(getString(R.string.tag_location_bottom))){
+        if (tabPanelLocation.equals(getString(R.string.tag_location_bottom))) {
             mainBinding.LlForBottomPanel.addView(tabLayout);
-        } else mainBinding.LlForTopPanel.addView(tabLayout);
+        } else {
+            mainBinding.LlForTopPanel.addView(tabLayout);
+        }
     }
 
     private void initTabTitles() {
@@ -153,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.settingsItem){
+        if (item.getItemId() == R.id.settingsItem) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
@@ -165,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
         // Use a Factory to inject dependencies into the ViewModel
         AdvPhoneViewModelFactory factory = AdvPhoneViewModelFactory.getInstance(activity.getApplication());
 
-        return (T) ViewModelProviders.of(activity, factory).get(modelClass);
+        return ViewModelProviders.of(activity, factory).get(modelClass);
     }
 
     @Override
@@ -194,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
 
     public void showContactActivity(View view) {
         Intent intent = new Intent(this, ContactActivity.class);
-        startActivityForResult(intent, RequestCodes.REQUEST_NEW_CONTACT);
+        startActivityForResult(intent, REQUEST_NEW_CONTACT);
     }
 
     @Override
@@ -213,6 +269,16 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
                     obtainViewModel(this, ContactsViewModel.class).updateContact(contact);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mainBinding.searchContactRecycler.getVisibility() == View.VISIBLE) {
+            mainBinding.searchView.setQuery("", false);
+            mainBinding.searchContactRecycler.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
         }
     }
 }

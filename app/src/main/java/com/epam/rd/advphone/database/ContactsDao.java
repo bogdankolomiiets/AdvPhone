@@ -1,5 +1,6 @@
 package com.epam.rd.advphone.database;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
@@ -10,6 +11,7 @@ import androidx.room.Update;
 
 import com.epam.rd.advphone.models.Contact;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.*;
@@ -39,6 +41,9 @@ public interface ContactsDao {
 
     @Query("SELECT * FROM " + DB_NAME + " WHERE " + CONTACT_FAVOURITE + " = 1 ORDER BY " + CONTACT_NAME)
     List<Contact> getFavouriteContacts();
+
+    @Query("SELECT * FROM " + DB_NAME + " WHERE " + CONTACT_NAME + " LIKE :name ORDER BY " + CONTACT_NAME)
+    LiveData<List<Contact>> getContactsByName(String name);
 
     @Query("SELECT COUNT() FROM " + DB_NAME + " WHERE " + CONTACT_FAVOURITE + " = 1 ORDER BY " + CONTACT_NAME)
     LiveData<Integer> getCountOfFavourites();

@@ -23,21 +23,30 @@
                 app:queryHint="@string/find_in_address_book" />
         </androidx.appcompat.widget.Toolbar>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchContactRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolBar"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:listitem="@layout/contact_item"/>
+
         <LinearLayout
             android:id="@+id/LlForTopPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/toolBar"
-            android:gravity="center">
-        </LinearLayout>
+            android:layout_below="@id/searchContactRecycler"
+            android:gravity="center"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/LlForTopPanel"
-            android:layout_above="@id/LlForBottomPanel"/>
+            android:layout_above="@id/LlForBottomPanel"
+            android:layout_marginTop="0dp" />
 
         <LinearLayout
             android:id="@+id/LlForBottomPanel"
