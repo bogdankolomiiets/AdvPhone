@@ -10,11 +10,14 @@
             name="onContactEditClickListener"
             type="com.epam.rd.advphone.util.OnContactEditClickListener" />
         <variable
-            name="onContactConnectClickListener"
-            type="com.epam.rd.advphone.util.OnContactConnectClickListener" />
+            name="contactCommunicator"
+            type="com.epam.rd.advphone.util.ContactCommunicator" />
         <variable
             name="itemPosition"
             type="int"/>
+        <variable
+            name="view"
+            type="android.view.View" />
     </data>
 
     <RelativeLayout
@@ -77,7 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/call_image"
-                        android:onClick="@{() -> onContactConnectClickListener.onCallClick(contact.phone)}"
+                        android:onClick="@{() -> contactCommunicator.call(view, contact.phone)}"
                         android:src="@drawable/phone" />
 
                     <ImageButton
@@ -86,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/sms_image"
-                        android:onClick="@{() -> onContactConnectClickListener.onSmsClick(contact.phone)}"
+                        android:onClick="@{() -> contactCommunicator.sendSms(view, contact.phone)}"
                         android:src="@drawable/message_text" />
 
                     <ImageButton

@@ -1,27 +1,20 @@
 package com.epam.rd.advphone.views;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.databinding.KeypadFragmentBinding;
+import com.epam.rd.advphone.util.ContactCommunicator;
 
-import java.util.Locale;
-
-public class KeypadFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
+public class KeypadFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, ContactCommunicator {
     private KeypadFragmentBinding binding;
 
     @Nullable
@@ -37,19 +30,11 @@ public class KeypadFragment extends Fragment implements View.OnClickListener, Vi
     }
 
     public void callFirstSim() {
-        String toDial = "tel:" + Uri.encode(binding.editNumber.getText().toString());
-        Intent callIntent = new Intent();
-        callIntent.setAction(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse(toDial));
-        startActivity(callIntent);
+        call(binding.getRoot(), binding.editNumber.getText().toString());
     }
 
     public void callSecondSim() {
-        String toDial = "tel:" + Uri.encode(binding.editNumber.getText().toString());
-        Intent callIntent = new Intent();
-        callIntent.setAction(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse(toDial));
-        startActivity(callIntent);
+        call(binding.getRoot(), binding.editNumber.getText().toString());
     }
 
     private void setOnclickListeners() {
