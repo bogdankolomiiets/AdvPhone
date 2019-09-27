@@ -55,7 +55,7 @@ import static com.epam.rd.advphone.RequestCodes.REQUEST_EDIT_CONTACT;
 import static com.epam.rd.advphone.RequestCodes.REQUEST_NEW_CONTACT;
 
 
-public class MainActivity extends AppCompatActivity implements ContactCommunicator {
+public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding mainBinding;
     private int[] tabTitles;
     private String tabPanelLocation;
@@ -95,7 +95,10 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
 
     private void findContactsFeature() {
         mainBinding.searchView.setOnQueryTextFocusChangeListener((view, hasFocus) -> {
-            if (hasFocus) searchContactRecycler.setVisibility(View.VISIBLE);
+            if (hasFocus) {
+                searchContactRecycler.setVisibility(View.VISIBLE);
+                mainBinding.LlForBottomPanel.setVisibility(View.GONE);
+            }
         });
 
         mainBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -184,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
         tabLayout = new TabLayout(this);
         tabLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.setZ(-1);
         tabLayout.setTabTextColors(Color.DKGRAY, getResources().getColor(R.color.colorAccent));
 
         //setup tabLayout location
@@ -224,30 +226,6 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
         return ViewModelProviders.of(activity, factory).get(modelClass);
     }
 
-    @Override
-    public void call(String contactNumber) {
-        String permission = Manifest.permission.CALL_PHONE;
-        if (PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, RequestCodes.PERMISSION_CALL_PHONE);
-        } else {
-            Intent intent = new Intent(Intent.ACTION_CALL);
-            intent.setData(Uri.parse("tel:" + PhoneNumberUtils.normalizeNumber(contactNumber)));
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void sendSms(String contactNumber) {
-        String permission = Manifest.permission.SEND_SMS;
-        if (PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, RequestCodes.PERMISSION_SEND_SMS);
-        } else {
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("sms:" + PhoneNumberUtils.normalizeNumber(contactNumber)));
-            startActivity(intent);
-        }
-    }
-
     public void showContactActivity(View view) {
         Intent intent = new Intent(this, ContactActivity.class);
         startActivityForResult(intent, REQUEST_NEW_CONTACT);
@@ -277,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements ContactCommunicat
         if (mainBinding.searchContactRecycler.getVisibility() == View.VISIBLE) {
             mainBinding.searchView.setQuery("", false);
             mainBinding.searchContactRecycler.setVisibility(View.GONE);
+            mainBinding.LlForBottomPanel.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
         }

@@ -41,4 +41,6 @@
     <string name="empty_name">Enter name please</string>
     <string name="empty_phone">Enter phone number please</string>
     <string name="remove_contact">Remove contact</string>
+    <string name="sms" translatable="false">sms</string>
+    <string name="send_sms">SEND</string>
 </resources>

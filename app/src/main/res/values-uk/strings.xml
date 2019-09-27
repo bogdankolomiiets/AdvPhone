@@ -17,4 +17,5 @@
     <string name="empty_phone">Введіть номер телефону</string>
     <string name="cancel_btn">Відмінити</string>
     <string name="remove_contact">Видалити контакт</string>
+    <string name="send_sms">Надіслати</string>
 </resources>

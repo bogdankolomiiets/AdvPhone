@@ -2,7 +2,6 @@ package com.epam.rd.advphone.views;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,16 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.RequestCodes;
 import com.epam.rd.advphone.adapters.CallRecyclerViewAdapter;
-import com.epam.rd.advphone.models.Call;
 import com.epam.rd.advphone.repositories.CallsProvider;
 import com.epam.rd.advphone.repositories.PhoneCallsProvider;
 import com.epam.rd.advphone.viewmodels.CallsViewModel;
 
-import java.util.List;
-
 public class RecentFragment extends Fragment {
 
     private View view;
+
 
     @Nullable
     @Override
@@ -50,7 +46,6 @@ public class RecentFragment extends Fragment {
             callsProvider = PhoneCallsProvider.getInstance(getContext());
         }
 
-        //init recyclerView for all contacts
         RecyclerView recentRecyclerView = view.findViewById(R.id.recentRecyclerView);
         recentRecyclerView.setHasFixedSize(true);
 
@@ -59,12 +54,17 @@ public class RecentFragment extends Fragment {
 
         CallRecyclerViewAdapter adapter = new CallRecyclerViewAdapter(callsViewModel);
 
-        callsViewModel.getCallsLogList().observe(this, calls -> adapter.setCallsLogList(calls));
+        callsViewModel.getCallsLogList().observe(this, calls -> {
+            adapter.setCallsLogList(calls);
+            view.findViewById(R.id.progress_bar).setVisibility(View.GONE);
+        });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recentRecyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration decoration = new DividerItemDecoration(view.getContext(), layoutManager.getOrientation());
         recentRecyclerView.addItemDecoration(decoration);
         recentRecyclerView.setAdapter(adapter);
+
+
     }
 }

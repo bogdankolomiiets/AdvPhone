@@ -21,7 +21,6 @@ import com.epam.rd.advphone.databinding.ContactItemBinding;
 import com.epam.rd.advphone.models.Contact;
 import com.epam.rd.advphone.util.ContactBackground;
 import com.epam.rd.advphone.util.ContactCommunicator;
-import com.epam.rd.advphone.util.OnContactConnectClickListener;
 import com.epam.rd.advphone.util.OnContactEditClickListener;
 import com.epam.rd.advphone.viewmodels.ContactsViewModel;
 import com.epam.rd.advphone.views.ContactActivity;
@@ -32,8 +31,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder>
-                                        implements OnContactConnectClickListener, OnContactEditClickListener {
-    private ContactCommunicator contactCommunicator;
+                                        implements ContactCommunicator, OnContactEditClickListener {
     private RecyclerView recyclerView;
     private ContactsViewModel viewModel;
     private List<Contact> contacts;
@@ -48,13 +46,10 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     @NonNull
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //init contactCommunicator
-        this.contactCommunicator = (ContactCommunicator) recyclerView.getContext();
-
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ContactItemBinding contactItemBinding =
                 DataBindingUtil.inflate(inflater, R.layout.contact_item, parent, false);
-        contactItemBinding.setOnContactConnectClickListener(this);
+        contactItemBinding.setContactCommunicator(this);
         contactItemBinding.setOnContactEditClickListener(this);
 
         contactItemBinding.getRoot().setOnLongClickListener(view -> {
@@ -85,6 +80,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
         Contact contact = contacts.get(position);
         holder.contactItemBinding.setContact(contact);
+        holder.contactItemBinding.setView(recyclerView);
         holder.contactItemBinding.setItemPosition(position);
 
         if (contact.getContactImage() != null) {
@@ -155,16 +151,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     public void onFavouriteClick(int position, Contact contact) {
         contact.setFavourite(!contact.isFavourite());
         viewModel.updateContact(contact);
-    }
-
-    @Override
-    public void onCallClick(String contactNumber) {
-        contactCommunicator.call(contactNumber);
-    }
-
-    @Override
-    public void onSmsClick(String contactNumber) {
-        contactCommunicator.sendSms(contactNumber);
     }
 
     @Override
