@@ -18,4 +18,23 @@
     <string name="cancel_btn">Відмінити</string>
     <string name="remove_contact">Видалити контакт</string>
     <string name="send_sms">Надіслати</string>
+    <string name="import_contacts_from">Імпортувати контакти з:</string>
+    <string name="all_contacts">Усі контакти</string>
+    <string name="google_account_contacts">Контакти облікового запису Google</string>
+    <string name="phone_contacts">Контакти телефону</string>
+    <string name="sms_text">Текст повідомлення</string>
+    <string name="pick_recipient">Обрати отримувача</string>
+    <string name="message_sent">НАДІСЛАНО</string>
+    <string name="empty_message">Введіть текст повідомлення</string>
+    <string name="no_recipient">%1$sВКАЖІТЬ ОТРИМУВАЧА</string>
+    <string name="new_sms">Нове повідомлення</string>
+    <string name="messages">Повідомлення</string>
+    <string name="minutes">хв.</string>
+    <string name="seconds">сек</string>
+    <string name="no_messages">Повідомлення відсутні</string>
+    <string name="max_count_title">Максимальна кількість</string>
+    <string name="max_count_text">Перевищено максимальну кількість адресатів</string>
+    <string name="delete">Видалити</string>
+    <string name="delete_sms_chain">Бесіду буде видалено</string>
+    <string name="delete_single_message">Видалити повідомлення</string>
 </resources>

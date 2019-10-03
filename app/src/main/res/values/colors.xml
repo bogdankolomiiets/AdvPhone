@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2979ff</color>
-    <color name="colorPrimaryDark">#004ecb</color>
+    <color name="colorPrimary">#efebe9</color>
+    <color name="colorPrimaryDark">#bdb9b7</color>
     <color name="colorAccent">#f50057</color>
+    <color name="sms_background_color">#f5f5f5</color>
+    <color name="sms_border_color">#c2c2c2</color>
+    <color name="single_sms_to_recipient_background">#f1f8e9</color>
+    <color name="single_sms_from_recipient_background">#f9fbe7</color>
     <color name="backgroundGrey">#f5f5f5</color>
+    <color name="cardViewBackground">#fafafa</color>
     <color name="favourite_contact">#f3e5f5</color>
     <color name="textColorGrey">#8d8d8d</color>
     <color name="white">#FFFFFF</color>

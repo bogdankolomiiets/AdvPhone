@@ -14,10 +14,9 @@ public class CallsViewModel extends ViewModel {
 
     private CallsProvider callsProvider;
     private MutableLiveData<List<Call>> callsLogList;
-    private ExecutorService executorService;
 
     public MutableLiveData<List<Call>> getCallsLogList() {
-        executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
         if (callsLogList == null) {
             callsLogList = new MutableLiveData<>();
             executorService.execute(() -> {

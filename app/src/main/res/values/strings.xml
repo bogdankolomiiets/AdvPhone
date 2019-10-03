@@ -25,7 +25,7 @@
     <string name="button_sharp" translatable="false">#</string>
     <string name="contact_image" translatable="false">contact image</string>
     <string name="ok_btn" translatable="false">OK</string>
-    <string name="cancel_btn">CANCEL</string>
+    <string name="cancel_btn">Cancel</string>
     <string name="call_image" translatable="false">call image</string>
     <string name="sms_image" translatable="false">sms image</string>
     <string name="heart_image" translatable="false">heart image</string>
@@ -41,6 +41,32 @@
     <string name="empty_name">Enter name please</string>
     <string name="empty_phone">Enter phone number please</string>
     <string name="remove_contact">Remove contact</string>
-    <string name="sms" translatable="false">sms</string>
+    <string name="messages">messages</string>
+    <string name="new_sms">New message</string>
     <string name="send_sms">SEND</string>
+    <string name="sms_text">Text message</string>
+    <string name="arrow_up" translatable="false">arrow up</string>
+    <string name="number_divider" translatable="false">/</string>
+    <string name="pick_recipient">pick recipient</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="message_sent">MESSAGE SENT</string>
+    <string name="empty_message">EMPTY MESSAGE</string>
+    <string name="no_recipient">%1$sPICK RECIPIENT(S)</string>
+    <string name="seconds">sec</string>
+    <string name="minutes">min</string>
+    <string name="pick_new_recipient_bnt_tag" translatable="false">pickNewRecipientBnt</string>
+    <string name="new_recipient_add_btn" translatable="false">new_recipient_add_btn</string>
+    <string name="no_messages">No messages</string>
+    <string name="max_count_title">Max count</string>
+    <string name="max_count_text">You have exceeded the maximum number of recipients</string>
+    <string name="delete">Delete</string>
+    <string name="delete_sms_chain">The conversation chain will be deleted.</string>
+    <string name="delete_single_message">Delete message</string>
+    <string name="import_contacts_from">Import contacts from:</string>
+    <string name="all_contacts">All contacts</string>
+    <string name="phone_contacts">Phone contacts</string>
+    <string name="google_account_contacts">Google account contacts</string>
+    <string name="call_type_outgoing" translatable="false">outgoing</string>
+    <string name="call_type_incoming" translatable="false">incoming</string>
+    <string name="call_type_missed" translatable="false">missed</string>
 </resources>

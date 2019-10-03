@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,14 +19,10 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.epam.rd.advphone.AdvPhoneViewModelFactory;
 import com.epam.rd.advphone.Constants;
 import com.epam.rd.advphone.ContactDaoInjection;
 import com.epam.rd.advphone.R;
@@ -41,10 +35,8 @@ import com.epam.rd.advphone.repositories.CallsProvider;
 import com.epam.rd.advphone.repositories.ContactsProvider;
 import com.epam.rd.advphone.repositories.PhoneCallsProvider;
 import com.epam.rd.advphone.repositories.PhoneContactsProvider;
-import com.epam.rd.advphone.util.ContactCommunicator;
 import com.epam.rd.advphone.viewmodels.CallsViewModel;
 import com.epam.rd.advphone.viewmodels.ContactsViewModel;
-import com.google.android.material.elevation.ElevationOverlayProvider;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -85,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         //init ContactsViewModel for contacts searching
-        contactsViewModel = obtainViewModel(this, ContactsViewModel.class);
+        contactsViewModel = ViewModelProviders.of(this).get(ContactsViewModel.class);
 
         //find contacts by name
         findContactsFeature();
@@ -122,10 +114,7 @@ public class MainActivity extends AppCompatActivity {
     private void initSearchContactRecycler() {
         searchContactRecycler = mainBinding.searchContactRecycler;
         searchContactRecycler.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        searchContactRecycler.setLayoutManager(layoutManager);
-        DividerItemDecoration decoration = new DividerItemDecoration(this, layoutManager.getOrientation());
-        searchContactRecycler.addItemDecoration(decoration);
+        searchContactRecycler.setLayoutManager(new LinearLayoutManager(this));
         ContactRecyclerViewAdapter adapter = new ContactRecyclerViewAdapter(contactsViewModel);
         searchContactRecycler.setAdapter(adapter);
         contactsViewModel.getFoundContacts().observe(this, adapter::setContacts);
@@ -162,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void readCallLog() {
         CallsProvider callsProvider = PhoneCallsProvider.getInstance(this);
-        CallsViewModel callsViewModel = obtainViewModel(this, CallsViewModel.class);
+        CallsViewModel callsViewModel = ViewModelProviders.of(this).get(CallsViewModel.class);
         callsViewModel.setCallsProvider(callsProvider);
         callsViewModel.getCallsLogList().setValue(callsProvider.getCalls());
     }
@@ -185,8 +174,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void createTabLayout() {
         tabLayout = new TabLayout(this);
-        tabLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tabLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabMode(TabLayout.MODE_AUTO);
         tabLayout.setTabTextColors(Color.DKGRAY, getResources().getColor(R.color.colorAccent));
 
         //setup tabLayout location
@@ -198,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTabTitles() {
-        tabTitles = new int[] {R.string.keypad, R.string.recent, R.string.contacts};
+        tabTitles = new int[]{R.string.keypad, R.string.recent, R.string.messages, R.string.contacts};
     }
 
     //init main menu
@@ -219,13 +209,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static <T extends ViewModel> T obtainViewModel(FragmentActivity activity, Class<T> modelClass) {
-        // Use a Factory to inject dependencies into the ViewModel
-        AdvPhoneViewModelFactory factory = AdvPhoneViewModelFactory.getInstance(activity.getApplication());
-
-        return ViewModelProviders.of(activity, factory).get(modelClass);
-    }
-
     public void showContactActivity(View view) {
         Intent intent = new Intent(this, ContactActivity.class);
         startActivityForResult(intent, REQUEST_NEW_CONTACT);
@@ -239,12 +222,12 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == REQUEST_NEW_CONTACT) {
                 contact = data.getParcelableExtra(CONTACT);
                 if (contact != null) {
-                    obtainViewModel(this, ContactsViewModel.class).insertContact(contact);
+                    ViewModelProviders.of(this).get(ContactsViewModel.class).insertContact(contact);
                 }
             } else if (requestCode == REQUEST_EDIT_CONTACT) {
                 contact = data.getParcelableExtra(CONTACT);
                 if (contact != null) {
-                    obtainViewModel(this, ContactsViewModel.class).updateContact(contact);
+                    ViewModelProviders.of(this).get(ContactsViewModel.class).updateContact(contact);
                 }
             }
         }

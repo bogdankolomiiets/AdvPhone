@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Call {
 
-    public static SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy \nHH:mm");
+    private static SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy \nHH:mm");
 
     private int id;
     private String name;
@@ -48,8 +48,7 @@ public class Call {
     }
 
     public String getDate() {
-        String dateString = formatter.format(new Date(date));
-        return dateString;
+        return formatter.format(new Date(date));
     }
 
     public String getPhoto() {

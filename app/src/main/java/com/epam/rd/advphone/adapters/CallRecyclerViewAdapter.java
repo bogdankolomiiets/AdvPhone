@@ -22,7 +22,6 @@ import com.epam.rd.advphone.models.Call;
 import com.epam.rd.advphone.repositories.PhoneCallsProvider;
 import com.epam.rd.advphone.util.ContactCommunicator;
 import com.epam.rd.advphone.util.OnCallInsertClickListener;
-import com.epam.rd.advphone.viewmodels.CallsViewModel;
 import com.epam.rd.advphone.views.ContactActivity;
 
 import java.util.ArrayList;
@@ -31,15 +30,12 @@ import java.util.List;
 public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerViewAdapter.ViewHolder>
         implements ContactCommunicator, OnCallInsertClickListener {
 
-    private CallLogItemBinding callLogItemBinding;
     private RecyclerView recyclerView;
-    private CallsViewModel callsViewModel;
     private List<Call> callsLogList;
     private int prev_expanded = -1;
 
 
-    public CallRecyclerViewAdapter(CallsViewModel callsViewModel) {
-        this.callsViewModel = callsViewModel;
+    public CallRecyclerViewAdapter() {
         this.callsLogList = new ArrayList<>();
     }
 
@@ -47,8 +43,7 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        callLogItemBinding =
-                DataBindingUtil.inflate(inflater, R.layout.call_log_item, parent, false);
+        CallLogItemBinding callLogItemBinding = DataBindingUtil.inflate(inflater, R.layout.call_log_item, parent, false);
         callLogItemBinding.setContactCommunicator(this);
         callLogItemBinding.setView(recyclerView);
         callLogItemBinding.setOnCallInsertClickListener(this);

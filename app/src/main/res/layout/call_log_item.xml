@@ -66,16 +66,19 @@
 
             <ImageView
                 style="@style/callTypeStyle"
+                android:contentDescription="@string/call_type_outgoing"
                 android:visibility='@{call.type.equals("OUTGOING") ? View.VISIBLE : View.GONE}'
                 app:srcCompat="@drawable/call_made" />
 
             <ImageView
                 style="@style/callTypeStyle"
+                android:contentDescription="@string/call_type_incoming"
                 android:visibility='@{call.type.equals("INCOMING") ? View.VISIBLE : View.GONE}'
                 app:srcCompat="@drawable/call_received" />
 
             <ImageView
                 style="@style/callTypeStyle"
+                android:contentDescription="@string/call_type_missed"
                 android:visibility='@{call.type.equals("MISSED") ? View.VISIBLE : View.GONE}'
                 app:srcCompat="@drawable/call_missed" />
         </FrameLayout>
@@ -133,7 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/sms_image"
-                    android:onClick="@{() -> contactCommunicator.sendSms(view, call.phone)}"
+                    android:onClick="@{() -> contactCommunicator.sendSms(view, call.phone, call.name)}"
                     android:src="@drawable/message_text" />
 
                 <ImageButton
