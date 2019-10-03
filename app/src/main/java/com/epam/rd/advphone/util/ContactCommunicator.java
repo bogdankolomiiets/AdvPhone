@@ -5,15 +5,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.telephony.PhoneNumberUtils;
 import android.view.View;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.PermissionChecker;
 
-import com.epam.rd.advphone.Constants;
 import com.epam.rd.advphone.RequestCodes;
 import com.epam.rd.advphone.views.SmsActivity;
+
+import static com.epam.rd.advphone.Constants.CONTACT_NAME;
+import static com.epam.rd.advphone.Constants.CONTACT_NUMBER;
 
 public interface ContactCommunicator {
     default void call(View view, String contactNumber){
@@ -29,7 +30,7 @@ public interface ContactCommunicator {
         }
     }
 
-    default void sendSms(View view, String contactNumber) {
+    default void sendSms(View view, String contactNumber, String contactName) {
         Context context = view.getContext();
 
         String permission = Manifest.permission.SEND_SMS;
@@ -37,7 +38,8 @@ public interface ContactCommunicator {
             ActivityCompat.requestPermissions((Activity) context, new String[]{permission}, RequestCodes.PERMISSION_SEND_SMS);
         } else {
             Intent intent = new Intent(context, SmsActivity.class);
-            intent.putExtra(Constants.CONTACT_NUMBER, Uri.encode(contactNumber));
+            intent.putExtra(CONTACT_NUMBER, contactNumber);
+            intent.putExtra(CONTACT_NAME, contactName);
             context.startActivity(intent);
         }
     }

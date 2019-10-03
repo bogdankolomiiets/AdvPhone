@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.epam.rd.advphone.views.ContactsFragment;
 import com.epam.rd.advphone.views.KeypadFragment;
 import com.epam.rd.advphone.views.RecentFragment;
+import com.epam.rd.advphone.views.SmsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class MainViewPager2Adapter extends FragmentStateAdapter {
         fragments = new ArrayList<>();
         fragments.add(new KeypadFragment());
         fragments.add(new RecentFragment());
+        fragments.add(new SmsFragment());
         fragments.add(new ContactsFragment());
     }
 

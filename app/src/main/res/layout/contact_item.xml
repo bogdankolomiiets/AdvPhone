@@ -1,78 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="contact"
             type="com.epam.rd.advphone.models.Contact" />
+
         <variable
             name="onContactEditClickListener"
             type="com.epam.rd.advphone.util.OnContactEditClickListener" />
+
         <variable
             name="contactCommunicator"
             type="com.epam.rd.advphone.util.ContactCommunicator" />
+
         <variable
             name="itemPosition"
-            type="int"/>
+            type="int" />
+
         <variable
             name="view"
             type="android.view.View" />
     </data>
 
-    <RelativeLayout
-        android:id="@+id/mainContactInfoContainer"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/contactImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="8dp"
-            android:contentDescription="@string/contact_image" />
-
-        <TextView
-            android:id="@+id/contactName"
-            style="@style/contactItemNameStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/contactImage"
-            android:layout_alignBottom="@+id/contactImage"
-            android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/contactImage"
-            android:gravity="center_vertical"
-            android:text="@{contact.name}"
-            tools:text="Contact name" />
+        android:layout_height="wrap_content"
+        style="@style/cardViewStyle">
 
         <RelativeLayout
-            android:id="@+id/contactDetailInfoContainer"
+            android:id="@+id/mainContactInfoContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/contactName"
-            android:layout_alignStart="@+id/contactName"
-            android:layout_alignParentEnd="true"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/contactImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/contact_image" />
+
+            <TextView
+                android:id="@+id/contactName"
+                style="@style/contactItemNameStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/contactImage"
+                android:layout_alignBottom="@+id/contactImage"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/contactImage"
+                android:gravity="center_vertical"
+                android:text="@{contact.name}"
+                tools:text="Contact name" />
+
+            <RelativeLayout
+                android:id="@+id/contactDetailInfoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/contactName"
+                android:layout_alignStart="@+id/contactName"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     android:id="@+id/contactPhone"
                     style="@style/contactItemPhoneStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{contact.phone}"
-                    android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
+                    android:text="@{contact.phone}"
                     tools:text="@string/number" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_below="@id/contactPhone">
+                    android:layout_below="@id/contactPhone"
+                    android:orientation="horizontal">
 
                     <ImageButton
                         android:id="@+id/callBtn"
@@ -89,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/sms_image"
-                        android:onClick="@{() -> contactCommunicator.sendSms(view, contact.phone)}"
+                        android:onClick="@{() -> contactCommunicator.sendSms(view, contact.phone, contact.name)}"
                         android:src="@drawable/message_text" />
 
                     <ImageButton
@@ -111,6 +121,7 @@
                         android:onClick="@{() -> onContactEditClickListener.onEditClick(contact)}"
                         android:src="@drawable/account_edit_outline" />
                 </LinearLayout>
+            </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

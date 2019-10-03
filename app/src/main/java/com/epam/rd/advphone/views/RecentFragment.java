@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +42,7 @@ public class RecentFragment extends Fragment {
 
         String permission = Manifest.permission.READ_CALL_LOG;
         if (PermissionChecker.checkSelfPermission(view.getContext(), permission) == PermissionChecker.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this.getActivity(), new String[]{permission}, RequestCodes.PERMISSION_READ_CALL_LOG);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, RequestCodes.PERMISSION_READ_CALL_LOG);
         } else {
             callsProvider = PhoneCallsProvider.getInstance(getContext());
         }
@@ -49,10 +50,10 @@ public class RecentFragment extends Fragment {
         RecyclerView recentRecyclerView = view.findViewById(R.id.recentRecyclerView);
         recentRecyclerView.setHasFixedSize(true);
 
-        CallsViewModel callsViewModel = MainActivity.obtainViewModel(getActivity(), CallsViewModel.class);
+        CallsViewModel callsViewModel = ViewModelProviders.of(getActivity()).get(CallsViewModel.class);
         callsViewModel.setCallsProvider(callsProvider);
 
-        CallRecyclerViewAdapter adapter = new CallRecyclerViewAdapter(callsViewModel);
+        CallRecyclerViewAdapter adapter = new CallRecyclerViewAdapter();
 
         callsViewModel.getCallsLogList().observe(this, calls -> {
             adapter.setCallsLogList(calls);

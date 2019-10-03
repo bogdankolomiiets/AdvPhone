@@ -1,8 +1,6 @@
 package com.epam.rd.advphone.database;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -11,12 +9,12 @@ import androidx.room.Update;
 
 import com.epam.rd.advphone.models.Contact;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.rd.advphone.database.DatabaseStringsConstants.*;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_FAVOURITE;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_ID;
+import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_NAME;
+import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_PHONE;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.DB_NAME;
 
 @Dao
@@ -36,15 +34,17 @@ public interface ContactsDao {
 
     @Query("SELECT a.* FROM (SELECT * FROM " + DB_NAME + " WHERE " + CONTACT_FAVOURITE + " = 1) a " +
             "UNION ALL SELECT b.* FROM (SELECT * FROM " + DB_NAME + " ORDER BY " + CONTACT_NAME + ") b")
-//    @Query("SELECT * FROM " + DB_NAME + " ORDER BY " + CONTACT_NAME)
-    LiveData<List<Contact>> getContacts();
+    LiveData<List<Contact>> getFavAndAllContacts();
 
-    @Query("SELECT * FROM " + DB_NAME + " WHERE " + CONTACT_FAVOURITE + " = 1 ORDER BY " + CONTACT_NAME)
-    List<Contact> getFavouriteContacts();
+    @Query("SELECT * FROM " + DB_NAME + " ORDER BY " + CONTACT_NAME)
+    LiveData<List<Contact>> getAllContacts();
 
     @Query("SELECT * FROM " + DB_NAME + " WHERE " + CONTACT_NAME + " LIKE :name ORDER BY " + CONTACT_NAME)
     LiveData<List<Contact>> getContactsByName(String name);
 
     @Query("SELECT COUNT() FROM " + DB_NAME + " WHERE " + CONTACT_FAVOURITE + " = 1 ORDER BY " + CONTACT_NAME)
     LiveData<Integer> getCountOfFavourites();
+
+    @Query("SELECT " + CONTACT_NAME + " FROM " + DB_NAME + " WHERE " + CONTACT_PHONE + " = :contactNumber")
+    String getContactName(String contactNumber);
 }

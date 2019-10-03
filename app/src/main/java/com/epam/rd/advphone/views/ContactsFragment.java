@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,19 +32,15 @@ public class ContactsFragment extends Fragment {
         //init recyclerView for all contacts
         RecyclerView contactRecyclerView = view.findViewById(R.id.contactRecyclerView);
         contactRecyclerView.setHasFixedSize(true);
+        contactRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ContactsViewModel contactsViewModel = MainActivity.obtainViewModel(getActivity(), ContactsViewModel.class);
+        ContactsViewModel contactsViewModel = ViewModelProviders.of(getActivity()).get(ContactsViewModel.class);
 
         ContactRecyclerViewAdapter adapter = new ContactRecyclerViewAdapter(contactsViewModel);
 
-        contactsViewModel.getContactsList().observe(this, contacts -> adapter.setContacts(contacts));
+        contactsViewModel.getContactsList().observe(this, adapter::setContacts);
+        contactsViewModel.getCountOfFavourite().observe(this, adapter::setCountOfFavourite);
 
-        contactsViewModel.getCountOfFavourite().observe(this, integer -> adapter.setCountOfFavourite(integer));
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        DividerItemDecoration decoration = new DividerItemDecoration(view.getContext(), layoutManager.getOrientation());
-        contactRecyclerView.setLayoutManager(layoutManager);
-        contactRecyclerView.addItemDecoration(decoration);
         contactRecyclerView.setAdapter(adapter);
     }
 }

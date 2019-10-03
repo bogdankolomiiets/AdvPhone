@@ -8,8 +8,6 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.epam.rd.advphone.database.DatabaseStringsConstants;
-
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_EMAIL;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_FAVOURITE;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_ID;
@@ -17,8 +15,9 @@ import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_IMA
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_NAME;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_PHONE;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_TYPE;
+import static com.epam.rd.advphone.database.DatabaseStringsConstants.DB_NAME;
 
-@Entity(tableName = DatabaseStringsConstants.DB_NAME)
+@Entity(tableName = DB_NAME)
 public class Contact implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = CONTACT_ID)
@@ -147,17 +146,4 @@ public class Contact implements Parcelable {
             return new Contact[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "Contact{" +
-                "id=" + id +
-                ", contactImage='" + contactImage + '\'' +
-                ", name='" + name + '\'' +
-                ", favourite=" + favourite +
-                ", phone='" + phone + '\'' +
-                ", type='" + type + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }

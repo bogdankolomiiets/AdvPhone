@@ -1,22 +1,18 @@
 package com.epam.rd.advphone.repositories;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.epam.rd.advphone.models.Call;
 import com.epam.rd.advphone.viewmodels.CallsViewModel;
-import com.epam.rd.advphone.views.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +24,7 @@ public class PhoneCallsProvider implements CallsProvider {
 
     private PhoneCallsProvider(Context context) {
         this.resolver = context.getContentResolver();
-        this.callsViewModel = MainActivity.obtainViewModel((FragmentActivity) context, CallsViewModel.class);
+        this.callsViewModel = ViewModelProviders.of((FragmentActivity) context).get(CallsViewModel.class);
     }
 
     public static PhoneCallsProvider getInstance(Context context) {

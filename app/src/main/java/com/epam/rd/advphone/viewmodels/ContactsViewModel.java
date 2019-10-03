@@ -1,10 +1,14 @@
 package com.epam.rd.advphone.viewmodels;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModel;
 
+import com.epam.rd.advphone.ContactDaoInjection;
 import com.epam.rd.advphone.database.ContactsDao;
 import com.epam.rd.advphone.models.Contact;
 
@@ -12,25 +16,24 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ContactsViewModel extends ViewModel {
+public class ContactsViewModel extends AndroidViewModel {
     private ContactsDao contactsDao;
     private LiveData<Integer> countOfFavourite;
     private LiveData<List<Contact>> contactsList;
     private MutableLiveData<String> contactsFilteringText = new MutableLiveData<>();
     private ExecutorService executorService;
 
-    public ContactsViewModel(ContactsDao contactsDao) {
-        this.contactsDao = contactsDao;
+    public ContactsViewModel(@NonNull Application application) {
+        super(application);
+        contactsDao = ContactDaoInjection.provideContactsDao(application);
+        executorService = Executors.newSingleThreadExecutor();
         initData();
     }
 
     private void initData() {
-        executorService = Executors.newSingleThreadExecutor();
         if (contactsList == null) {
-            executorService.execute(() -> {
-                contactsList = contactsDao.getContacts();
-                countOfFavourite = contactsDao.getCountOfFavourites();
-            });
+            contactsList = contactsDao.getFavAndAllContacts();
+            countOfFavourite = contactsDao.getCountOfFavourites();
         }
     }
 

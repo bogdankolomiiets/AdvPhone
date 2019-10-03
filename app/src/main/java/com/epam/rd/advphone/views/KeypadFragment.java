@@ -23,6 +23,7 @@ public class KeypadFragment extends Fragment implements View.OnClickListener, Vi
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.keypad_fragment, container, false);
         binding.setFragment(this);
+        binding.editNumber.setShowSoftInputOnFocus(false);
 
         setOnclickListeners();
 
@@ -56,26 +57,21 @@ public class KeypadFragment extends Fragment implements View.OnClickListener, Vi
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.imageButton_backspase:
-                String text = binding.editNumber.getText().toString();
-                if (text.length() > 0) {
-                    binding.editNumber.setText(text.substring(0, text.length() - 1));
-                }
-                break;
-            default:
-                binding.editNumber.setText(binding.editNumber.getText() + view.getTag().toString());
-                break;
+        if (view.getId() == R.id.imageButton_backspase) {
+            String text = binding.editNumber.getText().toString();
+            if (text.length() > 0) {
+                binding.editNumber.setText(text.substring(0, text.length() - 1));
+            }
+        } else {
+            binding.editNumber.setText(binding.editNumber.getText() + view.getTag().toString());
         }
     }
 
 
     @Override
     public boolean onLongClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_number_zero:
-                binding.editNumber.setText("+");
-                break;
+        if (view.getId() == R.id.button_number_zero) {
+            binding.editNumber.setText("+");
         }
         return true;
     }
