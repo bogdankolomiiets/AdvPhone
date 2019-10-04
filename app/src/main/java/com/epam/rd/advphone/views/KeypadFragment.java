@@ -58,15 +58,37 @@ public class KeypadFragment extends Fragment implements View.OnClickListener, Vi
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.imageButton_backspase) {
-            String text = binding.editNumber.getText().toString();
-            if (text.length() > 0) {
-                binding.editNumber.setText(text.substring(0, text.length() - 1));
+            String textDelete = binding.editNumber.getText().toString();
+            int positionDelete = binding.editNumber.getSelectionEnd();
+
+            if (textDelete.length() > 0) {
+
+                if (positionDelete != 0) {
+                    String beforeCursor = textDelete.substring(0, positionDelete - 1);
+                    String afterCursor = textDelete.substring(positionDelete);
+                    String enteredString = beforeCursor + afterCursor;
+                    binding.editNumber.setText(enteredString);
+                    binding.editNumber.setSelection(positionDelete - 1);
+                } else if (positionDelete == 0 && binding.editNumber.isFocused()) {
+
+                } else if (!binding.editNumber.isFocused()) {
+                    binding.editNumber.setText(textDelete.substring(0, textDelete.length() - 1));
+                }
             }
         } else {
-            binding.editNumber.setText(binding.editNumber.getText() + view.getTag().toString());
+            String textIncert = binding.editNumber.getText().toString();
+            int positionIncert = binding.editNumber.getSelectionEnd();
+
+            if (!binding.editNumber.isFocused()) {
+                binding.editNumber.setText(binding.editNumber.getText() + view.getTag().toString());
+                binding.editNumber.setSelection(binding.editNumber.getText().length());
+            } else {
+                binding.editNumber.setText(textIncert.substring(0, positionIncert) +
+                        view.getTag().toString() + textIncert.substring(positionIncert));
+                binding.editNumber.setSelection(positionIncert + 1);
+            }
         }
     }
-
 
     @Override
     public boolean onLongClick(View view) {
