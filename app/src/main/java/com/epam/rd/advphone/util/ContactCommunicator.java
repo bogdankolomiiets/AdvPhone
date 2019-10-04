@@ -26,6 +26,7 @@ public interface ContactCommunicator {
         } else {
             Intent intent = new Intent(Intent.ACTION_CALL);
             intent.setData(Uri.parse("tel:" + Uri.encode(contactNumber)));
+            intent.putExtra("com.android.phone.extra.slot", 0);
             context.startActivity(intent);
         }
     }
