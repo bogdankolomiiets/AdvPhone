@@ -9,8 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
 
@@ -27,13 +28,16 @@ import com.epam.rd.advphone.views.ContactActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder>
-                                        implements ContactCommunicator, OnContactEditClickListener {
+public class ContactRecyclerViewAdapter
+        extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactViewHolder>
+        implements ContactCommunicator, OnContactEditClickListener {
+
     private RecyclerView recyclerView;
-    private ContactsViewModel viewModel;
+    private final ContactsViewModel viewModel;
     private List<Contact> contacts;
     private int prev_expanded = -1;
     private int countOfFavourite;
@@ -53,16 +57,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         contactItemBinding.setOnContactEditClickListener(this);
 
         contactItemBinding.getRoot().setOnLongClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-            builder.setIcon(R.drawable.delete_alert);
-            builder.setTitle(R.string.remove_contact);
-            builder.setMessage(contactItemBinding.getContact().getName() + "\n\n" + contactItemBinding.getContact().getPhone());
-            builder.setPositiveButton(R.string.ok_btn, (dialogInterface, i) -> viewModel.deleteContact(contactItemBinding.getContact().getId()));
-            builder.setNegativeButton(R.string.cancel_btn, (dialogInterface, i) -> dialogInterface.dismiss());
-            builder.create().show();
+            ViewModelProviders.of((FragmentActivity) parent.getContext()).get(ContactsViewModel.class).showDeleteContactDialog(contactItemBinding.getContact(), view);
             return true;
         });
-
 
         return new ContactViewHolder(contactItemBinding.getRoot());
     }
@@ -71,7 +68,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         //if previous item is expanded and user scroll recyclerView
         //need setup visibility to GONE
-        if (holder.contactItemBinding.contactDetailInfoContainer.getVisibility() == View.VISIBLE) {
+        if (Objects.requireNonNull(holder.contactItemBinding).contactDetailInfoContainer.getVisibility() == View.VISIBLE) {
             holder.contactItemBinding.contactDetailInfoContainer.setVisibility(View.GONE);
         }
 
@@ -121,7 +118,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
     private void setFavouriteItemsBackground(@NonNull ContactViewHolder holder, int position) {
         if (countOfFavourite > 0) {
-            holder.contactItemBinding.mainContactInfoContainer.setBackgroundColor((position < countOfFavourite) ?
+            Objects.requireNonNull(holder.contactItemBinding).mainContactInfoContainer.setBackgroundColor((position < countOfFavourite) ?
                     recyclerView.getContext().getResources().getColor(R.color.favourite_contact) : Color.TRANSPARENT);
 
         }
@@ -160,10 +157,10 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         ((Activity)recyclerView.getContext()).startActivityForResult(intent, RequestCodes.REQUEST_EDIT_CONTACT);
     }
 
-    public class ContactViewHolder extends RecyclerView.ViewHolder {
-        ContactItemBinding contactItemBinding;
+    class ContactViewHolder extends RecyclerView.ViewHolder {
+        final ContactItemBinding contactItemBinding;
 
-        public ContactViewHolder(@NonNull View itemView) {
+        ContactViewHolder(@NonNull View itemView) {
             super(itemView);
             contactItemBinding = DataBindingUtil.bind(itemView);
         }

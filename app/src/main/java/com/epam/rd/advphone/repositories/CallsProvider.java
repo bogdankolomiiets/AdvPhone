@@ -6,5 +6,4 @@ import java.util.List;
 public interface CallsProvider {
     List<Call> getCalls();
     void deleteCalls(int id);
-    void clearAllCalls();
 }

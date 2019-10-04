@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainViewPager2Adapter extends FragmentStateAdapter {
-    private List<Fragment> fragments;
+    private final List<Fragment> fragments;
 
     public MainViewPager2Adapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);

@@ -6,5 +6,4 @@ public interface Constants {
     String CONTACT_NUMBER = "CONTACT_NUMBER";
     String CONTACT_NAME = "CONTACT_NAME";
     String CONTACT = "CONTACT";
-    String RECIPIENTS = "RECIPIENTS";
 }

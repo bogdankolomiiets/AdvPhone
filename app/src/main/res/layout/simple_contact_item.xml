@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/contactImage"
+            android:id="@+id/contactIcon"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
@@ -25,10 +25,10 @@
             style="@style/contactItemNameStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/contactImage"
-            android:layout_alignBottom="@+id/contactImage"
+            android:layout_alignTop="@+id/contactIcon"
+            android:layout_alignBottom="@+id/contactIcon"
             android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/contactImage"
+            android:layout_toEndOf="@+id/contactIcon"
             android:gravity="center_vertical"
             tools:text="Contact name" />
 

@@ -23,6 +23,8 @@ import com.epam.rd.advphone.repositories.CallsProvider;
 import com.epam.rd.advphone.repositories.PhoneCallsProvider;
 import com.epam.rd.advphone.viewmodels.CallsViewModel;
 
+import java.util.Objects;
+
 public class RecentFragment extends Fragment {
 
     private View view;
@@ -42,7 +44,7 @@ public class RecentFragment extends Fragment {
 
         String permission = Manifest.permission.READ_CALL_LOG;
         if (PermissionChecker.checkSelfPermission(view.getContext(), permission) == PermissionChecker.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, RequestCodes.PERMISSION_READ_CALL_LOG);
+            ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{permission}, RequestCodes.PERMISSION_READ_CALL_LOG);
         } else {
             callsProvider = PhoneCallsProvider.getInstance(getContext());
         }
@@ -50,7 +52,7 @@ public class RecentFragment extends Fragment {
         RecyclerView recentRecyclerView = view.findViewById(R.id.recentRecyclerView);
         recentRecyclerView.setHasFixedSize(true);
 
-        CallsViewModel callsViewModel = ViewModelProviders.of(getActivity()).get(CallsViewModel.class);
+        CallsViewModel callsViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(CallsViewModel.class);
         callsViewModel.setCallsProvider(callsProvider);
 
         CallRecyclerViewAdapter adapter = new CallRecyclerViewAdapter();

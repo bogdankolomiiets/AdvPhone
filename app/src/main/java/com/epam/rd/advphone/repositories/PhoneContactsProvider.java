@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PhoneContactsProvider implements ContactsProvider {
     private static PhoneContactsProvider phoneContactsProvider;
-    private ContentResolver contentResolver;
+    private final ContentResolver contentResolver;
 
     private PhoneContactsProvider(Context context){
         this.contentResolver = context.getContentResolver();
@@ -62,20 +62,5 @@ public class PhoneContactsProvider implements ContactsProvider {
             }
         }
         return tempList;
-    }
-
-    @Override
-    public void insertContact(Contact contact) {
-
-    }
-
-    @Override
-    public void updateContact(Contact contact) {
-
-    }
-
-    @Override
-    public void deleteContact(int contactId) {
-
     }
 }

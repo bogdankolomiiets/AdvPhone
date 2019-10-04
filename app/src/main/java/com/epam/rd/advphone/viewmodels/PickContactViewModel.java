@@ -1,6 +1,9 @@
 package com.epam.rd.advphone.viewmodels;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -8,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.epam.rd.advphone.Constants;
 import com.epam.rd.advphone.ContactDaoInjection;
 import com.epam.rd.advphone.SmsDaoInjection;
 import com.epam.rd.advphone.database.SmsDao;
@@ -21,11 +25,11 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class PickContactViewModel extends AndroidViewModel {
-    private SmsDao smsDao;
-    private LiveData<List<Contact>> contactsLive;
-    private List<Contact> contactsList;
-    private List<Contact> tempContactsList;
-    private MutableLiveData<String> pattern;
+    private final SmsDao smsDao;
+    private final LiveData<List<Contact>> contactsLive;
+    private final List<Contact> contactsList;
+    private final List<Contact> tempContactsList;
+    private final MutableLiveData<String> pattern;
 
     public PickContactViewModel(@NonNull Application application) {
         super(application);
@@ -34,7 +38,7 @@ public class PickContactViewModel extends AndroidViewModel {
         tempContactsList = new ArrayList<>();
         contactsLive = ContactDaoInjection.provideContactsDao(application).getAllContacts();
         pattern = new MutableLiveData<>();
-        pattern.setValue("\\S*\\S*");
+        pattern.setValue("[\\S ]*");
     }
 
     public List<Contact> getContacts() {
@@ -54,7 +58,7 @@ public class PickContactViewModel extends AndroidViewModel {
     }
 
     public void setPattern(String pattern) {
-        this.pattern.postValue("\\S*" + pattern.toLowerCase() + "\\S*");
+        this.pattern.postValue("[\\S ]*" + pattern.toLowerCase() + "[\\S ]*");
     }
 
     public MutableLiveData<String> getPattern() {
@@ -74,7 +78,12 @@ public class PickContactViewModel extends AndroidViewModel {
         Executors.newSingleThreadExecutor().execute(() -> smsDao.insertSms(sms));
     }
 
-    public void deleteSms(int smsId) {
-//        Executors.newSingleThreadExecutor().execute(() -> smsDao.deleteSms(smsId));
+    public void contactPicked(Context context, int position) {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.CONTACT_NUMBER, contactsList.get(position).getPhone());
+        intent.putExtra(Constants.CONTACT_NAME, contactsList.get(position).getName());
+        Activity activity = ((Activity) context);
+        activity.setResult(Activity.RESULT_OK, intent);
+        activity.finish();
     }
 }
