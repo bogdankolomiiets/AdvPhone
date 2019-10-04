@@ -16,11 +16,12 @@ import com.epam.rd.advphone.viewmodels.CallsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PhoneCallsProvider implements CallsProvider {
     private static PhoneCallsProvider phoneCallsProvider;
-    private ContentResolver resolver;
-    private CallsViewModel callsViewModel;
+    private final ContentResolver resolver;
+    private final CallsViewModel callsViewModel;
 
     private PhoneCallsProvider(Context context) {
         this.resolver = context.getContentResolver();
@@ -41,7 +42,7 @@ public class PhoneCallsProvider implements CallsProvider {
 
         try (@SuppressLint("MissingPermission") Cursor cursor = resolver.query(uri, null, null, null, CallLog.Calls.DEFAULT_SORT_ORDER)) {
 
-            while (cursor.moveToNext()) {
+            while (Objects.requireNonNull(cursor).moveToNext()) {
 
                 int callId = cursor.getInt(cursor.getColumnIndex(CallLog.Calls._ID));
                 String callName = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
@@ -120,10 +121,5 @@ public class PhoneCallsProvider implements CallsProvider {
     public void deleteCalls(int id) {
         resolver.delete(CallLog.Calls.CONTENT_URI, CallLog.Calls._ID + "=?", new String[]{String.valueOf(id)});
         callsViewModel.refreshCallsLog();
-    }
-
-    @Override
-    public void clearAllCalls() {
-
     }
 }

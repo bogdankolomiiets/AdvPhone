@@ -20,7 +20,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,19 +41,22 @@ import com.google.android.flexbox.FlexboxLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.epam.rd.advphone.Constants.CONTACT_NAME;
 import static com.epam.rd.advphone.Constants.CONTACT_NUMBER;
 
 public class SmsActivity extends AppCompatActivity {
-    public static final int MAX_SMS_ASCII_CHARACTER_LENGTH = 918;
-    public static final int MAX_SMS_UNICODE_CHARACTER_LENGTH = 402;
-    public static final int MAX_SMS_COUNT = 6;
-    public static final int MAX_UNICODE_SINGLE_SMS_LENGTH = 70;
-    public static final int MAX_UNICODE_MULTIPLE_SMS_LENGTH = 67;
-    public static final int MAX_ASCII_SINGLE_SMS_LENGTH = 160;
-    public static final int MAX_ASCII_MULTIPLE_SMS_LENGTH = 153;
+    private static final int MAX_SMS_ASCII_CHARACTER_LENGTH = 918;
+    private static final int MAX_SMS_UNICODE_CHARACTER_LENGTH = 402;
+    private static final int MAX_SMS_COUNT = 6;
+    private static final int MAX_UNICODE_SINGLE_SMS_LENGTH = 70;
+    private static final int MAX_UNICODE_MULTIPLE_SMS_LENGTH = 67;
+    private static final int MAX_ASCII_SINGLE_SMS_LENGTH = 160;
+    private static final int MAX_ASCII_MULTIPLE_SMS_LENGTH = 153;
 
+    private Toolbar toolbar;
+    private MutableLiveData<Boolean> isNewMessage;
     private ActivitySmsBinding smsBinding;
     private TextView smsTextLength;
     private TextView smsCount;
@@ -65,13 +70,48 @@ public class SmsActivity extends AppCompatActivity {
     private SmsViewModel smsViewModel;
     private LayoutInflater inflater;
     private FlexboxLayout recipientsContainer;
+    private RecyclerView concreteSmsRecyclerView;
     private ConcreteSmsRecyclerViewAdapter concreteSmsRecyclerViewAdapter;
     private InputMethodManager imm;
     private YoYo.YoYoString yoYoString;
+    private TextView countOfRecipientsTv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initComponents();
+        initToolbar();
+        getRecipientFromIntent();
+        setupTextChangedListener();
+        setupSendSmsBtnOnClickListener();
+        setupConcreteSmsRecyclerView();
+
+        isNewMessage.observe(this, aBoolean -> {
+            if (aBoolean) {
+                toolbar.setTitle(R.string.new_message);
+            } else {
+                destroyAddContactButton();
+                recipientsContainer.removeAllViews();
+                //set recipient number or name as toolBar title
+                Map.Entry<String, String> stringEntry = recipients.entrySet().iterator().next();
+                toolbar.setTitle(stringEntry.getValue() != null ? stringEntry.getValue() : stringEntry.getKey());
+            }
+        });
+
+        smsViewModel.getSmsByRecipient().observe(this, concreteSmsList -> {
+            if (concreteSmsList.isEmpty() && !isNewMessage.getValue()) {
+                finish();
+            } else {
+                concreteSmsRecyclerViewAdapter.setSmsList(concreteSmsList);
+                concreteSmsRecyclerView.scrollToPosition(concreteSmsList.size() - 1);
+                isNewMessage.setValue(concreteSmsList.isEmpty());
+            }
+        });
+
+    }
+
+    private void initComponents() {
         smsBinding = DataBindingUtil.setContentView(this, R.layout.activity_sms);
         smsTextLength = smsBinding.smsTextLength;
         recipientsContainer = smsBinding.recipientsContainer;
@@ -79,28 +119,14 @@ public class SmsActivity extends AppCompatActivity {
         smsText = smsBinding.smsText;
         sendSmsBtn = smsBinding.sendSmsBtn;
         smsManager = SmsManager.getDefault();
+        recipients = new HashMap<>();
         smsArrayList = new ArrayList<>();
         inflater = getLayoutInflater();
         concreteSmsRecyclerViewAdapter = new ConcreteSmsRecyclerViewAdapter();
         imm = (InputMethodManager) getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);
-
         smsViewModel = ViewModelProviders.of(this).get(SmsViewModel.class);
-        smsViewModel.getSmsByRecipient().observe(this, concreteSms -> concreteSmsRecyclerViewAdapter.setSmsList(concreteSms));
-
-        initRecipients();
-
-        setupTextChangedListener();
-
-        setupSendSmsBtnOnClickListener();
-
-        initConcreteSmsRecyclerView();
-    }
-
-    private void initConcreteSmsRecyclerView() {
-        RecyclerView concreteSmsRecyclerView = smsBinding.concreteSmsRecyclerView;
-        concreteSmsRecyclerView.setHasFixedSize(true);
-        concreteSmsRecyclerView.setAdapter(concreteSmsRecyclerViewAdapter);
-        concreteSmsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        isNewMessage = new MutableLiveData<>();
+        isNewMessage.setValue(true);
     }
 
     private void setupSendSmsBtnOnClickListener() {
@@ -109,13 +135,18 @@ public class SmsActivity extends AppCompatActivity {
                 if (smsText.length() > 0) {
                     sendSms();
                     showToast(R.string.message_sent);
-                    smsText.setText("");
-                    smsArrayList.clear();
-
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(smsText.getWindowToken(), 0);
                     }
-                    YoYo.with(Techniques.BounceInUp).playOn(sendSmsBtn);
+
+                    Boolean temp = isNewMessage.getValue();
+                    if (temp != null && temp) {
+                        finish();
+                    } else {
+                        smsText.setText("");
+                        smsArrayList.clear();
+                        YoYo.with(Techniques.BounceInUp).playOn(sendSmsBtn);
+                    }
                 } else {
                     showToast(R.string.empty_message);
                     YoYo.with(Techniques.Shake).playOn(sendSmsBtn);
@@ -124,6 +155,158 @@ public class SmsActivity extends AppCompatActivity {
                 startAddButtonAnimation();
             }
         });
+    }
+
+    private void getRecipientFromIntent() {
+        String recipientNumberFromIntent = getIntent().getStringExtra(CONTACT_NUMBER);
+        String recipientNameFromIntent = getIntent().getStringExtra(CONTACT_NAME);
+
+        if (recipientNumberFromIntent != null) {
+            smsViewModel.setRecipientNumber(recipientNumberFromIntent);
+            recipients.put(recipientNumberFromIntent, recipientNameFromIntent);
+            createTextViewForNewRecipient(recipientNumberFromIntent, recipientNameFromIntent);
+        } else {
+            initAddContactButton();
+        }
+    }
+
+    private void createTextViewForNewRecipient(String recipientNumber, String recipientName) {
+        View recipientView = inflater.inflate(R.layout.single_recipient_item_for_new_message,
+                smsBinding.recipientsContainer, false);
+        TextView recipientId = recipientView.findViewById(R.id.recipientId);
+        recipientId.setText(recipientName != null ? recipientName : recipientNumber);
+        recipientView.setOnClickListener(view -> {
+            recipients.remove(recipientNumber);
+            countOfRecipientsTv.setText(getStringRecipientsCount());
+            recipientsContainer.removeView(recipientView);
+            startAddButtonAnimation();
+        });
+        recipientsContainer.addView(recipientView);
+            initAddContactButton();
+    }
+
+    private void initAddContactButton() {
+        View pickNewRecipientBnt = inflater.inflate(R.layout.pick_new_recipient_button, smsBinding.recipientsContainer, false);
+
+        //set recipients count
+        countOfRecipientsTv = pickNewRecipientBnt.findViewById(R.id.countOfRecipientsTv);
+        countOfRecipientsTv.setText(getStringRecipientsCount());
+        pickNewRecipientBnt.setTag(R.string.pick_new_recipient_bnt_tag);
+
+        pickNewRecipientBnt.setOnClickListener(v -> {
+            //stopping button animation
+            if (yoYoString != null && yoYoString.isRunning()) {
+                yoYoString.stop();
+            }
+
+            if (recipients.size() >= MAX_RECIPIENT_COUNT) {
+                showAlertDialog();
+            } else {
+                Intent intent = new Intent(SmsActivity.this, PickContactActivity.class);
+                startActivityForResult(intent, RequestCodes.REQUEST_PICK_CONTACT);
+            }
+        });
+
+        if (recipients.size() > 0) {
+            destroyAddContactButton();
+        }
+
+        recipientsContainer.addView(pickNewRecipientBnt);
+        startAddButtonAnimation();
+    }
+
+    private void destroyAddContactButton() {
+        recipientsContainer.removeView(recipientsContainer.findViewWithTag(R.string.pick_new_recipient_bnt_tag));
+    }
+
+    private void startAddButtonAnimation() {
+        if (recipients.size() == 0) {
+            //reset animation if it's started
+            if (yoYoString != null && yoYoString.isRunning()) {
+                yoYoString.stop();
+                yoYoString.stop(true);
+            }
+
+            TextView noRecipientTv = new TextView(this);
+            noRecipientTv.setText(getString(R.string.no_recipient, "   "));
+            noRecipientTv.setTextSize(18);
+            yoYoString = YoYo.with(Techniques.Tada).pivot(10, 10).withListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    yoYoString = YoYo.with(Techniques.Flash).withListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            noRecipientTv.setVisibility(View.GONE);
+                            recipientsContainer.removeView(noRecipientTv);
+                        }
+                    }).playOn(recipientsContainer);
+                    super.onAnimationEnd(animation);
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    recipientsContainer.addView(noRecipientTv);
+                }
+            }).repeat(2).playOn(recipientsContainer);
+        }
+    }
+
+    private void sendSms() {
+        for (Map.Entry<String, String> entry : recipients.entrySet()) {
+//            if (smsArrayList.size() > 1) {
+//                smsManager.sendMultipartTextMessage(entry.getKey(), null, smsArrayList, null, null);
+//            } else {
+//                smsManager.sendTextMessage(entry.getKey(), null, smsArrayList.get(0), null, null);
+//            }
+            Sms newSms = new Sms(smsText.getText().toString(), entry.getKey(), entry.getValue(), System.currentTimeMillis());
+            Sms newSms2 = new Sms("How are you? How are you? How are you?", entry.getKey(), entry.getValue(), System.currentTimeMillis());
+            newSms2.setRecipient(true);
+            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(newSms);
+            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(newSms2);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == RequestCodes.REQUEST_PICK_CONTACT) {
+            if (resultCode == RESULT_OK && data != null) {
+                String recipientNumber = data.getStringExtra(CONTACT_NUMBER);
+                String recipientName = data.getStringExtra(CONTACT_NAME);
+
+                //if map of recipients contains value then we don't create new view
+                if (recipients.put(recipientNumber, recipientName) == null) {
+                    createTextViewForNewRecipient(recipientNumber, recipientName);
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void initToolbar() {
+        toolbar = smsBinding.toolBar;
+        toolbar.setTitle(R.string.new_message);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setupConcreteSmsRecyclerView() {
+        concreteSmsRecyclerView = smsBinding.concreteSmsRecyclerView;
+        concreteSmsRecyclerView.setHasFixedSize(true);
+        concreteSmsRecyclerView.setAdapter(concreteSmsRecyclerViewAdapter);
+        concreteSmsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void setupTextChangedListener() {
@@ -158,97 +341,6 @@ public class SmsActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isASCII(String text) {
-        return text.matches("\\A\\p{ASCII}*\\z");
-    }
-
-    private void initRecipients() {
-        recipients = new HashMap<>();
-
-        String firstRecipientNumber = getIntent().getStringExtra(CONTACT_NUMBER);
-        String firstRecipientName = getIntent().getStringExtra(CONTACT_NAME);
-        if (firstRecipientNumber != null) {
-            smsViewModel.setRecipientNumber(firstRecipientNumber);
-            recipients.put(firstRecipientNumber, firstRecipientName);
-            createTextViewForRecipients(firstRecipientNumber, firstRecipientName);
-        } else {
-            initAddContactButton();
-        }
-    }
-
-    private void createTextViewForRecipients(String recipientNumber, String recipientName) {
-        View recipientView = inflater.inflate(R.layout.single_recipient_item, smsBinding.recipientsContainer, false);
-        TextView recipientId = recipientView.findViewById(R.id.recipientId);
-        recipientId.setText(recipientName != null ? recipientName : recipientNumber);
-        recipientView.setOnClickListener(view -> {
-            recipients.remove(recipientNumber);
-            recipientsContainer.removeView(recipientView);
-            startAddButtonAnimation();
-        });
-        recipientsContainer.addView(recipientView);
-        initAddContactButton();
-    }
-
-    private void initAddContactButton() {
-        int recipientsSize = recipients.size();
-        View pickNewRecipientBnt = inflater.inflate(R.layout.pick_new_recipient_button, smsBinding.recipientsContainer, false);
-        pickNewRecipientBnt.setTag(R.string.pick_new_recipient_bnt_tag);
-        pickNewRecipientBnt.setOnClickListener(v -> {
-            //stopping button animation
-            if (yoYoString != null && yoYoString.isRunning()) {
-                yoYoString.stop();
-            }
-
-            if (recipientsSize >= MAX_RECIPIENT_COUNT) {
-                showAlertDialog();
-            } else {
-                Intent intent = new Intent(SmsActivity.this, PickContactActivity.class);
-                startActivityForResult(intent, RequestCodes.REQUEST_PICK_CONTACT);
-            }
-        });
-
-        if (recipientsSize > 0) {
-            recipientsContainer.removeView(recipientsContainer.findViewWithTag(R.string.pick_new_recipient_bnt_tag));
-        }
-        recipientsContainer.addView(pickNewRecipientBnt);
-
-        startAddButtonAnimation();
-    }
-
-    private void startAddButtonAnimation() {
-        if (recipients.size() == 0) {
-            //reset animation if it's started
-            if (yoYoString != null && yoYoString.isRunning()) {
-                yoYoString.stop();
-                yoYoString.stop(true);
-            }
-
-            TextView noRecipientTv = new TextView(this);
-            noRecipientTv.setText(getString(R.string.no_recipient, "   "));
-            noRecipientTv.setTextSize(18);
-            yoYoString = YoYo.with(Techniques.Tada).pivot(10, 10).withListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    yoYoString = YoYo.with(Techniques.Flash).withListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            noRecipientTv.setVisibility(View.GONE);
-                            recipientsContainer.removeView(noRecipientTv);
-                        }
-                    }).playOn(recipientsContainer);
-                    super.onAnimationEnd(animation);
-                }
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    recipientsContainer.addView(noRecipientTv);
-                }
-            }).repeat(5).playOn(recipientsContainer);
-        }
-    }
-
     private void showAlertDialog() {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder.setTitle(R.string.max_count_title)
@@ -258,55 +350,15 @@ public class SmsActivity extends AppCompatActivity {
                 }).create().show();
     }
 
-    private void sendSms() {
-        for (Map.Entry<String, String> entry : recipients.entrySet()) {
-//            if (smsArrayList.size() > 1) {
-//                smsManager.sendMultipartTextMessage(entry.getKey(), null, smsArrayList, null, null);
-//            } else {
-//                smsManager.sendTextMessage(entry.getKey(), null, smsArrayList.get(0), null, null);
-//            }
-            Sms newSms = new Sms(smsText.getText().toString(), entry.getKey(), entry.getValue(), System.currentTimeMillis());
-            Sms newSms2 = new Sms("Hello", entry.getKey(), entry.getValue(), System.currentTimeMillis());
-            newSms2.setRecipient(true);
-            Sms newSms3 = new Sms("How are you?", entry.getKey(), entry.getValue(), System.currentTimeMillis());
-            newSms3.setRecipient(true);
-            Sms newSms4 = new Sms("Not bad", entry.getKey(), entry.getValue(), System.currentTimeMillis());
-            newSms4.setRecipient(true);
-            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(newSms);
-            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(newSms2);
-            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(newSms3);
-            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(newSms4);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RequestCodes.REQUEST_PICK_CONTACT) {
-            if (resultCode == RESULT_OK && data != null) {
-                String recipientNumber = data.getStringExtra(CONTACT_NUMBER);
-                String recipientName = data.getStringExtra(CONTACT_NAME);
-
-                //if map of recipients contains value then we don't create new View
-                if (recipients.put(recipientNumber, recipientName) == null) {
-                    createTextViewForRecipients(recipientNumber, recipientName);
-                }
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
     private void showToast(int resourceId) {
         Toast.makeText(SmsActivity.this, resourceId, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
+    private String getStringRecipientsCount() {
+        return recipients.size() > 0 ? String.valueOf(recipients.size()) : "";
+    }
+
+    private boolean isASCII(String text) {
+        return text.matches("\\A\\p{ASCII}*\\z");
     }
 }

@@ -14,7 +14,6 @@ import java.util.List;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_FAVOURITE;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_ID;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_NAME;
-import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_PHONE;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.DB_NAME;
 
 @Dao
@@ -44,7 +43,4 @@ public interface ContactsDao {
 
     @Query("SELECT COUNT() FROM " + DB_NAME + " WHERE " + CONTACT_FAVOURITE + " = 1 ORDER BY " + CONTACT_NAME)
     LiveData<Integer> getCountOfFavourites();
-
-    @Query("SELECT " + CONTACT_NAME + " FROM " + DB_NAME + " WHERE " + CONTACT_PHONE + " = :contactNumber")
-    String getContactName(String contactNumber);
 }

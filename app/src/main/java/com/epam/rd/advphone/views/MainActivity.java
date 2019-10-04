@@ -40,6 +40,7 @@ import com.epam.rd.advphone.viewmodels.ContactsViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 import static com.epam.rd.advphone.Constants.CONTACT;
@@ -220,12 +221,12 @@ public class MainActivity extends AppCompatActivity {
         Contact contact;
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_NEW_CONTACT) {
-                contact = data.getParcelableExtra(CONTACT);
+                contact = Objects.requireNonNull(data).getParcelableExtra(CONTACT);
                 if (contact != null) {
                     ViewModelProviders.of(this).get(ContactsViewModel.class).insertContact(contact);
                 }
             } else if (requestCode == REQUEST_EDIT_CONTACT) {
-                contact = data.getParcelableExtra(CONTACT);
+                contact = Objects.requireNonNull(data).getParcelableExtra(CONTACT);
                 if (contact != null) {
                     ViewModelProviders.of(this).get(ContactsViewModel.class).updateContact(contact);
                 }

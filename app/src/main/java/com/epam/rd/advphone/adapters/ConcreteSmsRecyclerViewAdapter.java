@@ -14,15 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.models.Sms;
 import com.epam.rd.advphone.util.ContactCommunicator;
+import com.epam.rd.advphone.util.LongDateToString;
 import com.epam.rd.advphone.viewmodels.SmsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConcreteSmsRecyclerViewAdapter extends RecyclerView.Adapter<ConcreteSmsRecyclerViewAdapter.ConcreteSmsHolder> implements ContactCommunicator {
-    private List<Sms> smsList;
+public class ConcreteSmsRecyclerViewAdapter
+        extends RecyclerView.Adapter<ConcreteSmsRecyclerViewAdapter.ConcreteSmsHolder>
+        implements ContactCommunicator {
+
+    private final List<Sms> smsList;
     private final int RECIPIENT = 0;
-    private final int NOT_RECIPIENT = 1;
 
     public ConcreteSmsRecyclerViewAdapter() {
         smsList = new ArrayList<>();
@@ -40,7 +43,19 @@ public class ConcreteSmsRecyclerViewAdapter extends RecyclerView.Adapter<Concret
     @Override
     public void onBindViewHolder(@NonNull ConcreteSmsHolder holder, int position) {
         Sms sms = smsList.get(position);
-        holder.smsTime.setText(LongDateTimeAdapter.longTimeToString(sms.getTime()));
+
+        TextView recipientIcon = holder.recipientIcon;
+        if (recipientIcon != null) {
+            if (sms.getRecipientName() != null) {
+                recipientIcon.setBackgroundResource(R.drawable.background_of_existing_contact);
+                recipientIcon.setText(String.valueOf(sms.getRecipientName().charAt(0)));
+            } else {
+                recipientIcon.setBackgroundResource(R.drawable.background_of_not_existing_contact);
+                recipientIcon.setText("");
+            }
+        }
+
+        holder.smsTime.setText(LongDateToString.convert(holder.itemView.getContext(), sms.getTime()));
         holder.smsText.setText(sms.getMessageText());
         holder.itemView.setOnLongClickListener(v -> {
             showDialog(v, position);
@@ -60,6 +75,7 @@ public class ConcreteSmsRecyclerViewAdapter extends RecyclerView.Adapter<Concret
 
     @Override
     public int getItemViewType(int position) {
+        int NOT_RECIPIENT = 1;
         return smsList.get(position).isRecipient() ? RECIPIENT : NOT_RECIPIENT;
     }
 
@@ -74,14 +90,16 @@ public class ConcreteSmsRecyclerViewAdapter extends RecyclerView.Adapter<Concret
         return smsList.size();
     }
 
-    public class ConcreteSmsHolder extends RecyclerView.ViewHolder {
-        TextView smsTime;
-        TextView smsText;
+    class ConcreteSmsHolder extends RecyclerView.ViewHolder {
+        final TextView smsTime;
+        final TextView smsText;
+        final TextView recipientIcon;
 
-        public ConcreteSmsHolder(@NonNull View itemView) {
+        ConcreteSmsHolder(View itemView) {
             super(itemView);
             smsTime = itemView.findViewById(R.id.smsTime);
             smsText = itemView.findViewById(R.id.smsText);
+            recipientIcon = itemView.findViewById(R.id.recipientIcon);
         }
     }
 }

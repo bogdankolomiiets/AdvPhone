@@ -30,4 +30,7 @@ public interface SmsDao {
 
     @Query("DELETE FROM " + SMS_DB_NAME + " WHERE " + SMS_ID + " = :messageId")
     void deleteMessagesById(int messageId);
+
+//    @Query("SELECT COUNT(" + SMS_ID + ") FROM " + SMS_DB_NAME + " WHERE " + SMS_RECIPIENT_NUMBER + " = :recipientNumber")
+//    int existInDatabase(String recipientNumber);
 }

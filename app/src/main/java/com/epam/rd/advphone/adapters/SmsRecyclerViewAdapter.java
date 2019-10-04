@@ -4,26 +4,27 @@ import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.epam.rd.advphone.R;
-import com.epam.rd.advphone.databinding.SmsItemBinding;
 import com.epam.rd.advphone.models.Sms;
 import com.epam.rd.advphone.util.ContactCommunicator;
+import com.epam.rd.advphone.util.LongDateToString;
 import com.epam.rd.advphone.viewmodels.SmsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+public class SmsRecyclerViewAdapter
+        extends RecyclerView.Adapter<SmsRecyclerViewAdapter.SmsHolder>
+        implements ContactCommunicator {
 
-public class SmsRecyclerViewAdapter extends RecyclerView.Adapter<SmsRecyclerViewAdapter.SmsHolder> implements ContactCommunicator {
-    private List<Sms> smsList;
+    private final List<Sms> smsList;
 
     public SmsRecyclerViewAdapter() {
         smsList = new ArrayList<>();
@@ -32,27 +33,31 @@ public class SmsRecyclerViewAdapter extends RecyclerView.Adapter<SmsRecyclerView
     @NonNull
     @Override
     public SmsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.sms_item, parent, false);
-        return new SmsHolder(itemView.getRootView());
+        return new SmsHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.sms_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull SmsHolder holder, int position) {
         Sms sms = smsList.get(position);
-        holder.smsItemBinding.setSms(sms);
         holder.itemView.setOnLongClickListener(v -> {
             showDialog(position, v);
             return true;
         });
-        holder.smsItemBinding.getRoot().setOnClickListener(v -> sendSms(holder.itemView, sms.getRecipientNumber(), sms.getRecipientName()));
 
-        CircleImageView circleView = holder.smsItemBinding.contactImage;
+        holder.itemView.setOnClickListener(v -> showSmsActivity(holder.itemView, sms.getRecipientNumber(), sms.getRecipientName()));
+
+        holder.smsTime.setText(LongDateToString.convert(holder.itemView.getContext(), sms.getTime()));
+        holder.smsShortText.setText(sms.getMessageText());
+        holder.smsRecipientName.setText(sms.getRecipientName() != null ? sms.getRecipientName() : sms.getRecipientNumber());
+
+        TextView contactIcon = holder.contactIcon;
         if (sms.getRecipientName() != null) {
-            circleView.setImageResource(R.drawable.transparent);
-            holder.smsItemBinding.contactInitials.setText(String.valueOf(sms.getRecipientName().charAt(0)));
+            contactIcon.setBackgroundResource(R.drawable.background_of_existing_contact);
+            contactIcon.setText(String.valueOf(sms.getRecipientName().charAt(0)));
         } else {
-            circleView.setImageResource(R.drawable.account);
+            contactIcon.setBackgroundResource(R.drawable.background_of_not_existing_contact);
+            contactIcon.setText("");
         }
     }
 
@@ -78,12 +83,18 @@ public class SmsRecyclerViewAdapter extends RecyclerView.Adapter<SmsRecyclerView
         return smsList.size();
     }
 
-    public class SmsHolder extends RecyclerView.ViewHolder {
-        SmsItemBinding smsItemBinding;
+    class SmsHolder extends RecyclerView.ViewHolder {
+        final TextView smsTime;
+        final TextView smsShortText;
+        final TextView contactIcon;
+        final TextView smsRecipientName;
 
-        public SmsHolder(@NonNull View itemView) {
+        SmsHolder(@NonNull View itemView) {
             super(itemView);
-            smsItemBinding = DataBindingUtil.bind(itemView);
+            smsTime = itemView.findViewById(R.id.smsTime);
+            contactIcon = itemView.findViewById(R.id.contactIcon);
+            smsShortText = itemView.findViewById(R.id.smsShortText);
+            smsRecipientName = itemView.findViewById(R.id.smsRecipientName);
         }
     }
 }

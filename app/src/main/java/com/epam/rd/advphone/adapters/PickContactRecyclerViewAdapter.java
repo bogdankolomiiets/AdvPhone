@@ -1,7 +1,6 @@
 package com.epam.rd.advphone.adapters;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.epam.rd.advphone.Constants;
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.models.Contact;
 import com.epam.rd.advphone.util.ContactBackground;
+import com.epam.rd.advphone.viewmodels.PickContactViewModel;
 
 import java.util.List;
 
@@ -33,25 +34,21 @@ public class PickContactRecyclerViewAdapter extends RecyclerView.Adapter<PickCon
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         holder.itemView.setOnClickListener(view -> {
-            Intent intent = new Intent();
-            intent.putExtra(Constants.CONTACT_NUMBER, contacts.get(position).getPhone());
-            intent.putExtra(Constants.CONTACT_NAME, contacts.get(position).getName());
-            Activity activity = ((Activity) holder.itemView.getContext());
-            activity.setResult(Activity.RESULT_OK, intent);
-            activity.finish();
+            Context context = holder.itemView.getContext();
+            ViewModelProviders.of((FragmentActivity) context).get(PickContactViewModel.class).contactPicked(context, position);
         });
 
         Contact contact = contacts.get(position);
-        CircleImageView circleView = holder.contactImage;
+        CircleImageView contactIcon = holder.contactIcon;
 
         if (contact != null) {
             holder.contactName.setText(contacts.get(position).getName());
 
             if (contact.getContactImage() != null){
-                circleView.setImageURI(Uri.parse(contact.getContactImage()));
+                contactIcon.setImageURI(Uri.parse(contact.getContactImage()));
             } else{
-                circleView.setCircleBackgroundColor(ContactBackground.getColor(holder.itemView.getContext(), contact.getName().charAt(0)));
-                circleView.setImageResource(R.drawable.account);
+                contactIcon.setCircleBackgroundColor(ContactBackground.getColor(holder.itemView.getContext(), contact.getName().charAt(0)));
+                contactIcon.setImageResource(R.drawable.account);
             }
         }
     }
@@ -70,13 +67,13 @@ public class PickContactRecyclerViewAdapter extends RecyclerView.Adapter<PickCon
         notifyDataSetChanged();
     }
 
-    public class ContactViewHolder extends RecyclerView.ViewHolder {
-        CircleImageView contactImage;
-        TextView contactName;
+    class ContactViewHolder extends RecyclerView.ViewHolder {
+        final CircleImageView contactIcon;
+        final TextView contactName;
 
-        public ContactViewHolder(@NonNull View itemView) {
+        ContactViewHolder(@NonNull View itemView) {
             super(itemView);
-            contactImage = itemView.findViewById(R.id.contactImage);
+            contactIcon = itemView.findViewById(R.id.contactIcon);
             contactName = itemView.findViewById(R.id.contactName);
         }
     }

@@ -41,8 +41,8 @@
     <string name="empty_name">Enter name please</string>
     <string name="empty_phone">Enter phone number please</string>
     <string name="remove_contact">Remove contact</string>
-    <string name="messages">messages</string>
-    <string name="new_sms">New message</string>
+    <string name="messages">Messages</string>
+    <string name="new_message">New message</string>
     <string name="send_sms">SEND</string>
     <string name="sms_text">Text message</string>
     <string name="arrow_up" translatable="false">arrow up</string>
@@ -52,10 +52,9 @@
     <string name="message_sent">MESSAGE SENT</string>
     <string name="empty_message">EMPTY MESSAGE</string>
     <string name="no_recipient">%1$sPICK RECIPIENT(S)</string>
-    <string name="seconds">sec</string>
-    <string name="minutes">min</string>
+    <string name="seconds">%d sec</string>
+    <string name="minutes">%d min</string>
     <string name="pick_new_recipient_bnt_tag" translatable="false">pickNewRecipientBnt</string>
-    <string name="new_recipient_add_btn" translatable="false">new_recipient_add_btn</string>
     <string name="no_messages">No messages</string>
     <string name="max_count_title">Max count</string>
     <string name="max_count_text">You have exceeded the maximum number of recipients</string>

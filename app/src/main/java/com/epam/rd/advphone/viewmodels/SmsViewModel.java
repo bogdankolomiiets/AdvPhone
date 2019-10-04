@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class SmsViewModel extends AndroidViewModel {
-    private SmsDao smsDao;
-    private LiveData<List<Sms>> smsListLive;
-    private MutableLiveData<String> recipientNumberLive;
+    private final SmsDao smsDao;
+    private final LiveData<List<Sms>> smsListLive;
+    private final MutableLiveData<String> recipientNumberLive;
 
     public SmsViewModel(@NonNull Application application) {
         super(application);
@@ -36,8 +36,7 @@ public class SmsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Sms>> getSmsByRecipient() {
-        return Transformations.switchMap(recipientNumberLive, string ->
-                smsDao.getSmsByRecipient(string));
+        return Transformations.switchMap(recipientNumberLive, smsDao::getSmsByRecipient);
     }
 
     public void deleteMessagesByRecipient(String recipientNumber) {

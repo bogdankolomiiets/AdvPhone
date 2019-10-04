@@ -2,16 +2,17 @@ package com.epam.rd.advphone.models;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Call {
 
-    private static SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy \nHH:mm");
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy \nHH:mm", Locale.ENGLISH);
 
     private int id;
     private String name;
-    private String phone;
-    private String type;
-    private Long date;
+    private final String phone;
+    private final String type;
+    private final Long date;
     private String photo;
 
     private Call(Builder builder) {

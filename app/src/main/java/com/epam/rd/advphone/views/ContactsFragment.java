@@ -16,6 +16,8 @@ import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.adapters.ContactRecyclerViewAdapter;
 import com.epam.rd.advphone.viewmodels.ContactsViewModel;
 
+import java.util.Objects;
+
 public class ContactsFragment extends Fragment {
     private View view;
 
@@ -34,7 +36,7 @@ public class ContactsFragment extends Fragment {
         contactRecyclerView.setHasFixedSize(true);
         contactRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ContactsViewModel contactsViewModel = ViewModelProviders.of(getActivity()).get(ContactsViewModel.class);
+        ContactsViewModel contactsViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(ContactsViewModel.class);
 
         ContactRecyclerViewAdapter adapter = new ContactRecyclerViewAdapter(contactsViewModel);
 

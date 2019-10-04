@@ -27,10 +27,10 @@
     <string name="message_sent">НАДІСЛАНО</string>
     <string name="empty_message">Введіть текст повідомлення</string>
     <string name="no_recipient">%1$sВКАЖІТЬ ОТРИМУВАЧА</string>
-    <string name="new_sms">Нове повідомлення</string>
+    <string name="new_message">Нове повідомлення</string>
     <string name="messages">Повідомлення</string>
-    <string name="minutes">хв.</string>
-    <string name="seconds">сек</string>
+    <string name="minutes">%d хв</string>
+    <string name="seconds">%d сек</string>
     <string name="no_messages">Повідомлення відсутні</string>
     <string name="max_count_title">Максимальна кількість</string>
     <string name="max_count_text">Перевищено максимальну кількість адресатів</string>

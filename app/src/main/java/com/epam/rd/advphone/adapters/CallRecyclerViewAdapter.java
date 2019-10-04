@@ -3,7 +3,6 @@ package com.epam.rd.advphone.adapters;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,14 +25,14 @@ import com.epam.rd.advphone.views.ContactActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerViewAdapter.ViewHolder>
+public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerViewAdapter.CallViewHolder>
         implements ContactCommunicator, OnCallInsertClickListener {
 
     private RecyclerView recyclerView;
     private List<Call> callsLogList;
     private int prev_expanded = -1;
-
 
     public CallRecyclerViewAdapter() {
         this.callsLogList = new ArrayList<>();
@@ -41,20 +40,20 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CallViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         CallLogItemBinding callLogItemBinding = DataBindingUtil.inflate(inflater, R.layout.call_log_item, parent, false);
         callLogItemBinding.setContactCommunicator(this);
         callLogItemBinding.setView(recyclerView);
         callLogItemBinding.setOnCallInsertClickListener(this);
 
-        return new ViewHolder(callLogItemBinding.getRoot());
+        return new CallViewHolder(callLogItemBinding.getRoot());
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CallViewHolder holder, int position) {
 
-        if (holder.callLogItemBinding.callDetailInfoContainer.getVisibility() == View.VISIBLE) {
+        if (Objects.requireNonNull(holder.callLogItemBinding).callDetailInfoContainer.getVisibility() == View.VISIBLE) {
             holder.callLogItemBinding.callDetailInfoContainer.setVisibility(View.GONE);
         }
 
@@ -65,7 +64,6 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
         if (call.getPhoto() != null) {
             holder.callLogItemBinding.callImage.setImageURI(Uri.parse(call.getPhoto()));
         } else {
-            holder.callLogItemBinding.callImage.setCircleBackgroundColor(Color.LTGRAY);
             holder.callLogItemBinding.callImage.setImageResource(R.drawable.account);
         }
 
@@ -130,10 +128,10 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
         this.recyclerView = recyclerView;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        CallLogItemBinding callLogItemBinding;
+    class CallViewHolder extends RecyclerView.ViewHolder {
+        final CallLogItemBinding callLogItemBinding;
 
-        public ViewHolder(View view) {
+        CallViewHolder(View view) {
             super(view);
             callLogItemBinding = DataBindingUtil.bind(view);
         }

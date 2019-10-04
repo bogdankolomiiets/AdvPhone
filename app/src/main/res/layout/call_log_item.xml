@@ -35,12 +35,13 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/callImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/contactImageDimension"
+            android:layout_height="@dimen/contactImageDimension"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_margin="8dp"
-            android:contentDescription="@string/call_image" />
+            android:contentDescription="@string/call_image"
+            app:civ_circle_background_color="@color/circleImageBackground"/>
 
         <TextView
             android:id="@+id/callNumber"
@@ -136,7 +137,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/sms_image"
-                    android:onClick="@{() -> contactCommunicator.sendSms(view, call.phone, call.name)}"
+                    android:onClick="@{() -> contactCommunicator.showSmsActivity(view, call.phone, call.name)}"
                     android:src="@drawable/message_text" />
 
                 <ImageButton

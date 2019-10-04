@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#efebe9</color>
+    <color name="colorPrimary">#fafafa</color>
     <color name="colorPrimaryDark">#bdb9b7</color>
     <color name="colorAccent">#f50057</color>
     <color name="sms_background_color">#f5f5f5</color>
+    <color name="circleImageBackground">#f5f5f5</color>
     <color name="sms_border_color">#c2c2c2</color>
     <color name="single_sms_to_recipient_background">#f1f8e9</color>
     <color name="single_sms_from_recipient_background">#f9fbe7</color>
@@ -18,7 +19,6 @@
     <color name="snow">#FFFAFA</color>
     <color name="floral_white">#FFFAF0</color>
     <color name="lemon_chiffon">#FFFACD</color>
-    <color name="cornsilk">#FFF8DC</color>
     <color name="seashell">#FFF5EE</color>
     <color name="lavender_blush">#FFF0F5</color>
     <color name="papaya_whip">#FFEFD5</color>
@@ -65,7 +65,6 @@
     <color name="light_cyan">#E0FFFF</color>
     <color name="burlyWood">#DEB887</color>
     <color name="plum">#DDA0DD</color>
-    <color name="gainsboro">#DCDCDC</color>
     <color name="crimson">#DC143C</color>
     <color name="pale_violet_red">#DB7093</color>
     <color name="goldenrod">#DAA520</color>
