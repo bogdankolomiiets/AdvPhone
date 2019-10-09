@@ -1,5 +1,6 @@
 package com.epam.rd.advphone.views;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -15,14 +17,16 @@ import com.epam.rd.advphone.databinding.KeypadFragmentBinding;
 import com.epam.rd.advphone.util.ContactCommunicator;
 
 public class KeypadFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, ContactCommunicator {
+
     private KeypadFragmentBinding binding;
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.keypad_fragment, container, false);
-        binding.setFragment(this);
+        binding.setKeypad(this);
         binding.editNumber.setShowSoftInputOnFocus(false);
 
         setOnclickListeners();
@@ -30,11 +34,7 @@ public class KeypadFragment extends Fragment implements View.OnClickListener, Vi
         return binding.getRoot();
     }
 
-    public void callFirstSim() {
-        call(binding.getRoot(), binding.editNumber.getText().toString());
-    }
-
-    public void callSecondSim() {
+    public void call() {
         call(binding.getRoot(), binding.editNumber.getText().toString());
     }
 

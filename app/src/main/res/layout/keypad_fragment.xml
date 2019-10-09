@@ -6,8 +6,10 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
-            name="fragment"
+            name="keypad"
             type="com.epam.rd.advphone.views.KeypadFragment" />
 
     </data>
@@ -156,32 +158,55 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingStart="70dp"
-            android:paddingEnd="20dp">
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button_call_first"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/phone"
-                android:onClick="@{() -> fragment.callFirstSim()}"
-                android:text="@string/call_1" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button_call_second"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/phone"
-                android:onClick="@{() -> fragment.callSecondSim()}"
-                android:text="@string/call_2" />
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@null" />
+            </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/imageButton_backspase"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/backspase"
-                app:srcCompat="@drawable/backspace" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/button_call"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/circle_button"
+                    android:onClick="@{() -> keypad.call()}"
+                    app:srcCompat="@drawable/phone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/imageButton_backspase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:background="@null"
+                    android:contentDescription="@string/backspase"
+                    app:srcCompat="@drawable/backspace" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
