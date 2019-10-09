@@ -1,6 +1,7 @@
 package com.epam.rd.advphone.views;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView searchContactRecycler;
     private ContactsViewModel contactsViewModel;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

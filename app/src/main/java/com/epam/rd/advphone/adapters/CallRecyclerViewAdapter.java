@@ -101,6 +101,8 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
             builder.create().show();
             return true;
         });
+
+
     }
 
     @Override
