@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -128,15 +129,10 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            switch (requestCode) {
-                case RequestCodes.PERMISSION_READ_CONTACTS: {
-                    retrieveContacts();
-                    break;
-                }
-                case RequestCodes.PERMISSION_READ_CALL_LOG: {
-                    readCallLog();
-                    break;
-                }
+            if (requestCode == RequestCodes.PERMISSION_READ_CONTACTS) {
+                retrieveContacts();
+            } else if (requestCode == RequestCodes.PERMISSION_READ_CALL_LOG) {
+                readCallLog();
             }
         }
     }
@@ -225,14 +221,24 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == REQUEST_NEW_CONTACT) {
                 contact = Objects.requireNonNull(data).getParcelableExtra(CONTACT);
                 if (contact != null) {
+                    validateContactPhone(contact);
                     ViewModelProviders.of(this).get(ContactsViewModel.class).insertContact(contact);
                 }
             } else if (requestCode == REQUEST_EDIT_CONTACT) {
                 contact = Objects.requireNonNull(data).getParcelableExtra(CONTACT);
                 if (contact != null) {
+                    validateContactPhone(contact);
                     ViewModelProviders.of(this).get(ContactsViewModel.class).updateContact(contact);
                 }
             }
+        }
+    }
+
+    private void validateContactPhone(Contact contact) {
+        if (contact != null) {
+            contact.setPhone(contact.getPhone()
+                    .trim()
+                    .replace(" ", ""));
         }
     }
 

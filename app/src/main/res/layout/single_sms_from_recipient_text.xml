@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/recipientIcon"
-        android:layout_width="@dimen/contactImageDimension"
-        android:layout_height="@dimen/contactImageDimension"
+        android:layout_width="@dimen/contactIconDimension"
+        android:layout_height="@dimen/contactIconDimension"
         android:layout_marginEnd="4dp"
         android:gravity="center"
         style="@style/TextAppearance.AppCompat.Large"/>

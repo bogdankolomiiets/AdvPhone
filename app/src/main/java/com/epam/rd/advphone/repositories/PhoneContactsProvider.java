@@ -55,7 +55,9 @@ public class PhoneContactsProvider implements ContactsProvider {
                             cursor.getInt(contactIdColumnIndex),
                             cursor.getString(contactImageColumnIndex),
                             cursor.getString(contactNameColumnIndex),
-                            cursor.getString(contactPhoneColumnIndex),
+                            cursor.getString(contactPhoneColumnIndex)
+                                    .trim()
+                                    .replace(" ", ""),
                             cursor.getString(contactTypeColumnIndex),
                             cursor.getString(contactEmailColumnIndex)));
                 }

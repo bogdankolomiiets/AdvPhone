@@ -11,6 +11,7 @@ import com.epam.rd.advphone.models.Contact;
 
 import java.util.List;
 
+import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_PHONE;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_FAVOURITE;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_ID;
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_NAME;
@@ -22,7 +23,7 @@ public interface ContactsDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertContact(Contact contact);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertContacts(List<Contact> contacts);
 
     @Update
@@ -38,8 +39,11 @@ public interface ContactsDao {
     @Query("SELECT * FROM " + DB_NAME + " ORDER BY " + CONTACT_NAME)
     LiveData<List<Contact>> getAllContacts();
 
-    @Query("SELECT * FROM " + DB_NAME + " WHERE " + CONTACT_NAME + " LIKE :name ORDER BY " + CONTACT_NAME)
-    LiveData<List<Contact>> getContactsByName(String name);
+    @Query("SELECT * FROM " + DB_NAME + " WHERE " + CONTACT_NAME + " LIKE :contactName ORDER BY " + CONTACT_NAME)
+    LiveData<List<Contact>> getContactsByName(String contactName);
+
+    @Query("SELECT * FROM " + DB_NAME + " WHERE REPLACE (" + CONTACT_PHONE + ", '-', '') LIKE :contactNumber ORDER BY " + CONTACT_NAME)
+    LiveData<List<Contact>> getContactsByNumber(String contactNumber);
 
     @Query("SELECT COUNT() FROM " + DB_NAME + " WHERE " + CONTACT_FAVOURITE + " = 1 ORDER BY " + CONTACT_NAME)
     LiveData<Integer> getCountOfFavourites();

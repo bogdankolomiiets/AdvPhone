@@ -6,5 +6,5 @@
     <dimen name="settingsTopic">22sp</dimen>
     <dimen name="settingsRadioText">20sp</dimen>
     <dimen name="settingsImportContacts">20sp</dimen>
-    <dimen name="contactImageDimension">50dp</dimen>
+    <dimen name="contactIconDimension">50dp</dimen>
 </resources>

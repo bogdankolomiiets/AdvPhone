@@ -37,8 +37,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/contactImage"
-                android:layout_width="@dimen/contactImageDimension"
-                android:layout_height="@dimen/contactImageDimension"
+                android:layout_width="@dimen/contactIconDimension"
+                android:layout_height="@dimen/contactIconDimension"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_margin="8dp"
