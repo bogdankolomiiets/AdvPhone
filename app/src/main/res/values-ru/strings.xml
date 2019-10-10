@@ -37,4 +37,5 @@
     <string name="all_contacts">Все контакты</string>
     <string name="google_account_contacts">Контакты Google аккаунта</string>
     <string name="phone_contacts">Телефонные контакты</string>
+    <string name="add_to_contact">+ Добавить в контакты</string>
 </resources>

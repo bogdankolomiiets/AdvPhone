@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import static com.epam.rd.advphone.database.DatabaseStringsConstants.CONTACT_EMAIL;
@@ -43,6 +44,7 @@ public class Contact implements Parcelable {
     public Contact() {
     }
 
+    @Ignore
     public Contact(int id, String contactImage, String name, String phone, String type, String email) {
         this.id = id;
         this.contactImage = contactImage;

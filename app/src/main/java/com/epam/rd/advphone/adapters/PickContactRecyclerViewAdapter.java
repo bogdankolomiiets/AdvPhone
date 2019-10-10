@@ -27,7 +27,7 @@ public class PickContactRecyclerViewAdapter extends RecyclerView.Adapter<PickCon
     @NonNull
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simple_contact_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simple_contact_item_with_circle_image_view, parent, false);
         return new ContactViewHolder(view);
     }
 

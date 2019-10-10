@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.models.Sms;
+import com.epam.rd.advphone.util.ContactBackground;
 import com.epam.rd.advphone.util.ContactCommunicator;
 import com.epam.rd.advphone.util.LongDateToString;
 import com.epam.rd.advphone.viewmodels.SmsViewModel;
@@ -52,13 +53,14 @@ public class SmsRecyclerViewAdapter
         holder.smsRecipientName.setText(sms.getRecipientName() != null ? sms.getRecipientName() : sms.getRecipientNumber());
 
         TextView contactIcon = holder.contactIcon;
-        if (sms.getRecipientName() != null) {
-            contactIcon.setBackgroundResource(R.drawable.background_of_existing_contact);
-            contactIcon.setText(String.valueOf(sms.getRecipientName().charAt(0)));
-        } else {
-            contactIcon.setBackgroundResource(R.drawable.background_of_not_existing_contact);
-            contactIcon.setText("");
-        }
+        ContactBackground.setContactIcon(contactIcon, sms.getRecipientName());
+//        if (sms.getRecipientName() != null) {
+//            contactIcon.setBackgroundResource(R.drawable.background_of_existing_contact);
+//            contactIcon.setText(String.valueOf(sms.getRecipientName().charAt(0)));
+//        } else {
+//            contactIcon.setBackgroundResource(R.drawable.background_of_not_existing_contact);
+//            contactIcon.setText("");
+//        }
     }
 
     private void showDialog(int position, View v) {
