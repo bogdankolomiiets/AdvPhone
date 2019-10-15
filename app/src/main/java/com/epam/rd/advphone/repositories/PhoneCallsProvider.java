@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
@@ -39,18 +40,9 @@ public class PhoneCallsProvider implements CallsProvider {
     public List<Call> getCalls() {
         List<Call> callList = new ArrayList<>();
         Uri uri = CallLog.Calls.CONTENT_URI;
-
         try (@SuppressLint("MissingPermission") Cursor cursor = resolver.query(uri, null, null, null, CallLog.Calls.DEFAULT_SORT_ORDER)) {
 
             while (Objects.requireNonNull(cursor).moveToNext()) {
-
-                int callId = cursor.getInt(cursor.getColumnIndex(CallLog.Calls._ID));
-                String callName = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
-                String callPhone = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
-                String callType = cursor.getString(cursor.getColumnIndex(CallLog.Calls.TYPE));
-                Long callDate = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE));
-
-                String checkedCallType = checkCallType(callType);
 
                 String callPhoto = null;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -58,19 +50,15 @@ public class PhoneCallsProvider implements CallsProvider {
                 }
 
                 Call call = new Call.Builder()
-                        .setId(callId)
-                        .setName(callName)
-                        .setPhone(callPhone)
-                        .setType(checkedCallType)
-                        .setDate(callDate)
+                        .setId(cursor.getInt(cursor.getColumnIndex(CallLog.Calls._ID)))
+                        .setName(cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME)))
+                        .setPhone(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)))
+                        .setType(checkCallType(cursor.getString(cursor.getColumnIndex(CallLog.Calls.TYPE))))
+                        .setDate(cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)))
                         .setPhoto(callPhoto)
                         .build();
 
-                if (!callList.contains(call)) {
-                    if (callName == null)
-                        lookupContactInfo(call);
-                    callList.add(call);
-                }
+                callList.add(call);
             }
         }
         return callList;
@@ -78,8 +66,8 @@ public class PhoneCallsProvider implements CallsProvider {
 
     private String checkCallType(String callType) {
         String dirCode = null;
-
         int typeCode = Integer.parseInt(callType);
+
         switch (typeCode) {
             case CallLog.Calls.OUTGOING_TYPE:
                 dirCode = "OUTGOING";
@@ -91,11 +79,10 @@ public class PhoneCallsProvider implements CallsProvider {
                 dirCode = "MISSED";
                 break;
         }
-
         return dirCode;
     }
 
-    private void lookupContactInfo(Call call) {
+    public Call lookupContactInfo(Call call) {
         Cursor cursor = null;
         try {
             Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(call.getPhone()));
@@ -103,7 +90,7 @@ public class PhoneCallsProvider implements CallsProvider {
         } catch (IllegalArgumentException e) {
             //This is sometimes thrown when number is in invalid format, so phone cannot recognize it.
         } catch (SecurityException e) {
-            return;
+            e.printStackTrace();
         }
 
         if (cursor != null) {
@@ -113,7 +100,7 @@ public class PhoneCallsProvider implements CallsProvider {
             }
             cursor.close();
         }
-
+        return call;
     }
 
     @SuppressLint("MissingPermission")

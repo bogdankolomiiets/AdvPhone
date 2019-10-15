@@ -46,6 +46,7 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
         callLogItemBinding.setContactCommunicator(this);
         callLogItemBinding.setView(recyclerView);
         callLogItemBinding.setOnCallInsertClickListener(this);
+        phoneCallsProvider = PhoneCallsProvider.getInstance(recyclerView.getContext());
 
         return new CallViewHolder(callLogItemBinding.getRoot());
     }
@@ -58,8 +59,14 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
         }
 
         Call call = callsLogList.get(position);
+
+        if (call.getName() == null) {
+            call.setName(phoneCallsProvider.lookupContactInfo(call).getName());
+            call.setPhoto(phoneCallsProvider.lookupContactInfo(call).getPhoto());
+        }
+
         holder.callLogItemBinding.setCall(call);
-//        holder.callLogItemBinding.setItemPosition(position);
+        holder.callLogItemBinding.setItemPosition(position);
 
         if (call.getPhoto() != null) {
             holder.callLogItemBinding.callImage.setImageURI(Uri.parse(call.getPhoto()));
@@ -107,9 +114,7 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
 
     @Override
     public int getItemCount() {
-        if (callsLogList != null) {
-            return callsLogList.size();
-        } else return 0;
+        return callsLogList != null ? callsLogList.size() : 0;
     }
 
     public void setCallsLogList(List<Call> callsLogList) {

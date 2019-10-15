@@ -25,7 +25,6 @@ public class CallsViewModel extends ViewModel {
                 }
             });
         }
-
         return callsLogList;
     }
 
@@ -36,5 +35,4 @@ public class CallsViewModel extends ViewModel {
     public void refreshCallsLog() {
         callsLogList.setValue(callsProvider.getCalls());
     }
-
 }
