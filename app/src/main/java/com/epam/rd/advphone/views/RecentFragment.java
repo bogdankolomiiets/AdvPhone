@@ -29,7 +29,6 @@ public class RecentFragment extends Fragment {
 
     private View view;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,22 +51,20 @@ public class RecentFragment extends Fragment {
         RecyclerView recentRecyclerView = view.findViewById(R.id.recentRecyclerView);
         recentRecyclerView.setHasFixedSize(true);
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recentRecyclerView.setLayoutManager(layoutManager);
+        recentRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), layoutManager.getOrientation()));
+
+        CallRecyclerViewAdapter adapter = new CallRecyclerViewAdapter();
+        recentRecyclerView.setAdapter(adapter);
+
         CallsViewModel callsViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(CallsViewModel.class);
         callsViewModel.setCallsProvider(callsProvider);
 
-        CallRecyclerViewAdapter adapter = new CallRecyclerViewAdapter();
-
+        view.findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
         callsViewModel.getCallsLogList().observe(this, calls -> {
             adapter.setCallsLogList(calls);
             view.findViewById(R.id.progress_bar).setVisibility(View.GONE);
         });
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recentRecyclerView.setLayoutManager(layoutManager);
-        DividerItemDecoration decoration = new DividerItemDecoration(view.getContext(), layoutManager.getOrientation());
-        recentRecyclerView.addItemDecoration(decoration);
-        recentRecyclerView.setAdapter(adapter);
-
-
     }
 }
