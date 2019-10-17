@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.epam.rd.advphone">
 
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
@@ -10,6 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
 
     <application
         android:allowBackup="true"
@@ -17,7 +19,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".views.MainActivity"
             android:configChanges="orientation"
@@ -58,6 +61,14 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:label="@string/pick_recipient"/>
-    </application>
 
+        <service android:name=".services.SmsReceiveService"/>
+
+        <receiver android:name=".listeners.SmsListener"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter android:priority="@integer/catch_SMS">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+    </application>
 </manifest>

@@ -24,6 +24,7 @@
     <string name="empty_message">Введите текст сообщения</string>
     <string name="no_recipient">%1$sУКАЖИТЕ ПОЛУЧАТЕЛЯ</string>
     <string name="new_message">Новое сообщение</string>
+    <string name="new_messages">Новые сообщения</string>
     <string name="messages">Сообщения</string>
     <string name="minutes">%d мин</string>
     <string name="seconds">%d сек</string>
@@ -38,4 +39,6 @@
     <string name="google_account_contacts">Контакты Google аккаунта</string>
     <string name="phone_contacts">Телефонные контакты</string>
     <string name="add_to_contact">+ Добавить в контакты</string>
+    <string name="no_contacts">Контакты отсутствуют</string>
+    <string name="incoming_message_ticker">Входящее сообщение</string>
 </resources>

@@ -34,13 +34,6 @@ public class Sms {
     @ColumnInfo(name = SMS_IS_RECIPIENT)
     private boolean isRecipient;
 
-    public Sms(String messageText, String recipientNumber, String recipientName, long time) {
-        this.messageText = messageText;
-        this.recipientNumber = recipientNumber;
-        this.recipientName = recipientName;
-        this.time =  time;
-    }
-
     public int getId() {
         return id;
     }
@@ -87,5 +80,42 @@ public class Sms {
 
     public void setRecipient(boolean recipient) {
         isRecipient = recipient;
+    }
+
+    public static class Builder {
+        private Sms sms;
+
+        public Builder() {
+            sms = new Sms();
+        }
+
+        public Builder setMessageText(String messageText) {
+            sms.messageText = messageText;
+            return this;
+        }
+
+        public Builder setRecipientNumber(String recipientNumber) {
+            sms.recipientNumber = recipientNumber;
+            return this;
+        }
+
+        public Builder setRecipientName(String recipientName) {
+            sms.recipientName = recipientName;
+            return this;
+        }
+
+        public Builder setTime(long time) {
+            sms.time = time;
+            return this;
+        }
+
+        public Builder setRecipient(boolean recipient) {
+            sms.isRecipient = recipient;
+            return this;
+        }
+
+        public Sms build() {
+            return sms;
+        }
     }
 }

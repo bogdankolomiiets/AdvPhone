@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.epam.rd.advphone.models.Contact;
 
-@Database(entities = {Contact.class}, version = 1)
+@Database(entities = {Contact.class}, version = 1, exportSchema = false)
 public abstract class ContactsDatabase extends RoomDatabase {
     private static ContactsDatabase INSTANCE;
     public abstract ContactsDao contactDao();
