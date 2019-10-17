@@ -8,4 +8,5 @@ public class RequestCodes {
     public static final int REQUEST_NEW_CONTACT = 5;
     public static final int REQUEST_EDIT_CONTACT = 6;
     public static final int REQUEST_PICK_CONTACT = 7;
+    public static final int REQUEST_RECEIVE_SMS = 8;
 }

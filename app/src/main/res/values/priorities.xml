@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="catch_SMS">0x7fffffff</integer>
+</resources>

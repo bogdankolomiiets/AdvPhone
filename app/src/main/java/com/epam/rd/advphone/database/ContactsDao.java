@@ -45,6 +45,9 @@ public interface ContactsDao {
     @Query("SELECT * FROM " + DB_NAME + " WHERE REPLACE (" + CONTACT_PHONE + ", '-', '') LIKE :contactNumber ORDER BY " + CONTACT_NAME)
     LiveData<List<Contact>> getContactsByNumber(String contactNumber);
 
+    @Query("SELECT " + CONTACT_NAME + " FROM " + DB_NAME + " WHERE " + CONTACT_PHONE + " LIKE :contactNumber")
+    String getContactNameByNumber(String contactNumber);
+
     @Query("SELECT COUNT() FROM " + DB_NAME + " WHERE " + CONTACT_FAVOURITE + " = 1 ORDER BY " + CONTACT_NAME)
     LiveData<Integer> getCountOfFavourites();
 }

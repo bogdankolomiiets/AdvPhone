@@ -43,6 +43,7 @@
     <string name="remove_contact">Remove contact</string>
     <string name="messages">Messages</string>
     <string name="new_message">New message</string>
+    <string name="new_messages">New messages</string>
     <string name="send_sms">SEND</string>
     <string name="sms_text">Text message</string>
     <string name="arrow_up" translatable="false">arrow up</string>
@@ -69,4 +70,6 @@
     <string name="call_type_incoming" translatable="false">incoming</string>
     <string name="call_type_missed" translatable="false">missed</string>
     <string name="add_to_contact">+ Add to contacts</string>
+    <string name="no_contacts">No contacts</string>
+    <string name="incoming_message_ticker">Incoming message</string>
 </resources>

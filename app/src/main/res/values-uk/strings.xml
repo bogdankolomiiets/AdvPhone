@@ -28,6 +28,7 @@
     <string name="empty_message">Введіть текст повідомлення</string>
     <string name="no_recipient">%1$sВКАЖІТЬ ОТРИМУВАЧА</string>
     <string name="new_message">Нове повідомлення</string>
+    <string name="new_messages">Нові повідомлення</string>
     <string name="messages">Повідомлення</string>
     <string name="minutes">%d хв</string>
     <string name="seconds">%d сек</string>
@@ -38,4 +39,6 @@
     <string name="delete_sms_chain">Бесіду буде видалено</string>
     <string name="delete_single_message">Видалити повідомлення</string>
     <string name="add_to_contact">+ Додати в контакти</string>
+    <string name="no_contacts">Контакти відсутні</string>
+    <string name="incoming_message_ticker">Нові повідомлення</string>
 </resources>

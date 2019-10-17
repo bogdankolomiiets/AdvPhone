@@ -255,16 +255,19 @@ public class SmsActivity extends AppCompatActivity {
 
     private void sendSms() {
         for (Map.Entry<String, String> entry : recipients.entrySet()) {
-//            if (smsArrayList.size() > 1) {
-//                smsManager.sendMultipartTextMessage(entry.getKey(), null, smsArrayList, null, null);
-//            } else {
-//                smsManager.sendTextMessage(entry.getKey(), null, smsArrayList.get(0), null, null);
-//            }
-            Sms newSms = new Sms(smsText.getText().toString(), entry.getKey(), entry.getValue(), System.currentTimeMillis());
-            Sms newSms2 = new Sms("How are you? How are you? How are you?", entry.getKey(), entry.getValue(), System.currentTimeMillis());
-            newSms2.setRecipient(true);
-            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(newSms);
-            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(newSms2);
+            if (smsArrayList.size() > 1) {
+                smsManager.sendMultipartTextMessage(entry.getKey(), null, smsArrayList, null, null);
+            } else {
+                smsManager.sendTextMessage(entry.getKey(), null, smsArrayList.get(0), null, null);
+            }
+
+            Sms.Builder builder = new Sms.Builder()
+                    .setMessageText(smsText.getText().toString())
+                    .setRecipientNumber(entry.getKey())
+                    .setRecipientName(entry.getValue())
+                    .setTime(System.currentTimeMillis());
+
+            ViewModelProviders.of(this).get(PickContactViewModel.class).insertNewSms(builder.build());
         }
     }
 

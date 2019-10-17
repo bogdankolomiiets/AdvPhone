@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,11 +21,13 @@ import java.util.Objects;
 
 public class ContactsFragment extends Fragment {
     private View view;
+    private TextView noContacts;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = getLayoutInflater().inflate(R.layout.contacts_fragment, container, false);
+        noContacts = view.findViewById(R.id.noContacts);
         return view;
     }
 
@@ -40,7 +43,10 @@ public class ContactsFragment extends Fragment {
 
         ContactRecyclerViewAdapter adapter = new ContactRecyclerViewAdapter(contactsViewModel);
 
-        contactsViewModel.getContactsList().observe(this, adapter::setContacts);
+        contactsViewModel.getContactsList().observe(this, contacts -> {
+            adapter.setContacts(contacts);
+            noContacts.setVisibility(contacts.isEmpty() ? View.VISIBLE : View.GONE);
+        });
         contactsViewModel.getCountOfFavourite().observe(this, adapter::setCountOfFavourite);
 
         contactRecyclerView.setAdapter(adapter);

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         initTabTitles();
         initTabLayoutAndViewPager();
+        checkSmsReceivePermission();
     }
 
     @Override
@@ -239,6 +239,12 @@ public class MainActivity extends AppCompatActivity {
             contact.setPhone(contact.getPhone()
                     .trim()
                     .replace(" ", ""));
+        }
+    }
+
+    private void checkSmsReceivePermission() {
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PermissionChecker.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, RequestCodes.REQUEST_RECEIVE_SMS);
         }
     }
 
