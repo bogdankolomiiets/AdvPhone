@@ -41,4 +41,7 @@
     <string name="add_to_contact">+ Додати в контакти</string>
     <string name="no_contacts">Контакти відсутні</string>
     <string name="incoming_message_ticker">Нові повідомлення</string>
+    <string name="input_phone">Вказати номер</string>
+    <string name="add_number">Додати</string>
+    <string name="incorrect_phone">Номер введено неправильно</string>
 </resources>

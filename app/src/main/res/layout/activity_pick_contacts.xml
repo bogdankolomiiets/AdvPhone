@@ -13,11 +13,45 @@
         android:focusable="false"
         app:queryHint="@string/contact_name" />
 
+    <RelativeLayout
+        android:id="@+id/inputPhoneNumberContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/searchView"
+        android:layout_marginStart="8dp">
+
+        <EditText
+            android:id="@+id/phoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:hint="@string/input_phone"
+            android:layout_toStartOf="@id/addPhoneNumber"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="35dp"
+            android:maxLength="17"
+            android:autofillHints=""
+            tools:targetApi="O"/>
+
+        <TextView
+            android:id="@+id/addPhoneNumber"
+            style="@style/TextAppearance.AppCompat.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="-5dp"
+            android:background="@drawable/bookmark"
+            android:padding="16dp"
+            android:text="@string/add_number" />
+    </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pickContactRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/searchView"
+        android:layout_below="@id/inputPhoneNumberContainer"
         android:layout_marginTop="8dp"
         tools:listitem="@layout/simple_contact_item_with_circle_image_view" />
+
 </RelativeLayout>

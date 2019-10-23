@@ -1,7 +1,13 @@
 package com.epam.rd.advphone.views;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,12 +17,16 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.epam.rd.advphone.Constants;
 import com.epam.rd.advphone.R;
 import com.epam.rd.advphone.adapters.PickContactRecyclerViewAdapter;
 import com.epam.rd.advphone.viewmodels.PickContactViewModel;
 
+import java.util.regex.Pattern;
+
 public class PickContactActivity extends AppCompatActivity {
     private PickContactViewModel pickContactViewModel;
+    private static final String PHONE_PATTERN = "^[+]?[\\d]*[(]?\\d+[)]?\\d*[-]?\\d*[-]?\\d*";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,9 +41,28 @@ public class PickContactActivity extends AppCompatActivity {
             pickContactViewModel.setPattern(pattern == null ? "" : pattern);
         });
 
+        setupInputPhoneNumber();
+
         setupPickContactRecycler();
 
         setupSearchView();
+    }
+
+    private void setupInputPhoneNumber() {
+        TextView addPhoneNumber = findViewById(R.id.addPhoneNumber);
+        EditText phoneNumber = findViewById(R.id.phoneNumber);
+        addPhoneNumber.setOnClickListener(v -> {
+            String tempPhone = phoneNumber.getText().toString();
+            if (Pattern.matches(PHONE_PATTERN, tempPhone)) {
+                Intent intent = new Intent();
+                intent.putExtra(Constants.CONTACT_NUMBER, PhoneNumberUtils.normalizeNumber(tempPhone));
+                intent.putExtra(Constants.CONTACT_NAME, tempPhone);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+            } else {
+                Toast.makeText(PickContactActivity.this, R.string.incorrect_phone, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupSearchView() {
