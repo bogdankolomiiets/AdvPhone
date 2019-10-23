@@ -150,6 +150,14 @@
                     android:src="@drawable/account_plus"
                     android:visibility="visible" />
 
+                <TextView
+                    android:id="@+id/duration"
+                    style="@style/contactDetailStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:text="@{call.duration != null ? call.duration : null}" />
+
             </LinearLayout>
 
         </RelativeLayout>

@@ -1,12 +1,16 @@
 package com.epam.rd.advphone.models;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class Call {
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy \nHH:mm", Locale.ENGLISH);
+    private static final SimpleDateFormat formatterTime = new SimpleDateFormat("mm:ss", Locale.ENGLISH);
 
     private int id;
     private String name;
@@ -14,6 +18,7 @@ public class Call {
     private final String type;
     private final Long date;
     private String photo;
+    private String duration;
 
     private Call(Builder builder) {
         this.id = builder.id;
@@ -22,6 +27,7 @@ public class Call {
         this.type = builder.type;
         this.date = builder.date;
         this.photo = builder.photo;
+        this.duration = builder.duration;
     }
 
     public int getId() {
@@ -60,6 +66,12 @@ public class Call {
         this.photo = photo;
     }
 
+    public String getDuration() {
+        long time = Long.parseLong(duration);
+        formatterTime.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return formatterTime.format(new Date(time * 1000L));
+    }
+
     public static class Builder {
         private int id;
         private String name;
@@ -67,6 +79,7 @@ public class Call {
         private String type;
         private Long date;
         private String photo;
+        private String duration;
 
         public Builder() {
         }
@@ -98,6 +111,11 @@ public class Call {
 
         public Builder setPhoto(String photo) {
             this.photo = photo;
+            return this;
+        }
+
+        public Builder setDuration(String duration) {
+            this.duration = duration;
             return this;
         }
 
