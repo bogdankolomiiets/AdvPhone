@@ -11,7 +11,8 @@
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -49,27 +50,29 @@
 
         <activity
             android:name=".views.SmsActivity"
-            android:parentActivityName=".views.MainActivity"
             android:configChanges="orientation"
-            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".views.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBarStyle"/>
+            android:theme="@style/AppThemeNoActionBarStyle"
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".views.PickContactActivity"
-            android:parentActivityName=".views.SmsActivity"
             android:configChanges="orientation"
+            android:parentActivityName=".views.SmsActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppThemeNoActionBarStyle"/>
+            android:theme="@style/AppThemeNoActionBarStyle"
+            android:windowSoftInputMode="stateHidden" />
 
-        <service android:name=".services.SmsReceiveService"/>
+        <service android:name=".services.SmsReceiveService" />
 
-        <receiver android:name=".listeners.SmsListener"
+        <receiver
+            android:name=".listeners.SmsListener"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter android:priority="@integer/catch_SMS">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
     </application>
 </manifest>

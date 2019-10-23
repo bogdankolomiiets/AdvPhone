@@ -56,6 +56,7 @@ public class PhoneCallsProvider implements CallsProvider {
                         .setType(checkCallType(cursor.getString(cursor.getColumnIndex(CallLog.Calls.TYPE))))
                         .setDate(cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)))
                         .setPhoto(callPhoto)
+                        .setDuration(cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION)))
                         .build();
 
                 callList.add(call);

@@ -34,6 +34,7 @@ public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerVi
     private RecyclerView recyclerView;
     private List<Call> callsLogList;
     private int prev_expanded = -1;
+    private PhoneCallsProvider phoneCallsProvider;
 
     public CallRecyclerViewAdapter() {
         this.callsLogList = new ArrayList<>();
