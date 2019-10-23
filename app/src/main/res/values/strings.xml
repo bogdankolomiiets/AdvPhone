@@ -72,4 +72,8 @@
     <string name="add_to_contact">+ Add to contacts</string>
     <string name="no_contacts">No contacts</string>
     <string name="incoming_message_ticker">Incoming message</string>
+    <string name="input_phone">Input phone number</string>
+    <string name="add_number">Add</string>
+    <string name="one_two_three" translatable="false">123</string>
+    <string name="incorrect_phone">Phone number incorrect</string>
 </resources>

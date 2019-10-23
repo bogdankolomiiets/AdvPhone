@@ -30,6 +30,7 @@ import java.util.Objects;
 public class CallRecyclerViewAdapter extends RecyclerView.Adapter<CallRecyclerViewAdapter.CallViewHolder>
         implements ContactCommunicator, OnCallInsertClickListener {
 
+    private PhoneCallsProvider phoneCallsProvider;
     private RecyclerView recyclerView;
     private List<Call> callsLogList;
     private int prev_expanded = -1;

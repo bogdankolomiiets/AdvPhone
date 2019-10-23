@@ -41,4 +41,7 @@
     <string name="add_to_contact">+ Добавить в контакты</string>
     <string name="no_contacts">Контакты отсутствуют</string>
     <string name="incoming_message_ticker">Входящее сообщение</string>
+    <string name="input_phone">Указать номер</string>
+    <string name="add_number">Добавить</string>
+    <string name="incorrect_phone">Проверьте номер телефона</string>
 </resources>
